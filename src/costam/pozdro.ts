@@ -1,0 +1,3 @@
+import { cze } from '..';
+
+cze;

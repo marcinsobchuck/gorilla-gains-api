@@ -7,6 +7,8 @@
     "start": "npm run build && node build/index.js",
     "start:dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +16,11 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.3.2",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
     "nodemon": "^2.0.22",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
