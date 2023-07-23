@@ -1,3 +1,0 @@
-import { cze } from '..';
-
-cze;

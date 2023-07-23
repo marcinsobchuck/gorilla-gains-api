@@ -4,13 +4,13 @@
     "lib": ["es6"],
     "module": "commonjs",
     "rootDir": "src",
-    "baseUrl": ".",
     "resolveJsonModule": true,
+    "allowJs": true,
+    "outDir": "build",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
     "skipLibCheck": true
-  },
-  "include": ["src"]
+  }
 }
