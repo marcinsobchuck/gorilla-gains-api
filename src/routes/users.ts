@@ -39,7 +39,7 @@ usersRouter.post('/', async (req, res) => {
 
   const token = user.generateAuthToken();
 
-  res.header('X-auth-token', token).send({
+  res.header('Authorization', token).send({
     id: user._id,
     name: user.name,
     email: user.email

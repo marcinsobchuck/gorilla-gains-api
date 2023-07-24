@@ -1,20 +1,21 @@
-import { NextFunction, Request, Response } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import passport from 'passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
-interface UserAuthRequest extends Request {
-  user: string | JwtPayload;
-}
+import { User } from '../models/user';
 
-export const auth = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.header('X-auth-token');
+passport.use(
+  new Strategy(
+    {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET
+    },
+    function (jwt_payload, done) {
+      const user = User.findOne({ id: jwt_payload._id });
+      if (user) {
+        return done(null, user);
+      }
 
-  if (!token) return res.status(401).send('Acces denied. No token provided.');
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    (req as UserAuthRequest).user = decoded;
-    next();
-  } catch (err) {
-    res.status(400).send('Invalid token.');
-  }
-};
+      return done(null, false);
+    }
+  )
+);
