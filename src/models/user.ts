@@ -2,7 +2,7 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import mongoose, { Model } from 'mongoose';
 
-interface User {
+interface UserSchema {
   name: string;
   email: string;
   password: string;
@@ -12,9 +12,9 @@ interface UserMethods {
   generateAuthToken(): string;
 }
 
-type UserModel = Model<User, any, UserMethods>;
+type UserModel = Model<UserSchema, object, UserMethods>;
 
-const userSchema = new mongoose.Schema<User, UserModel, UserMethods>({
+const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
   name: {
     type: String,
     required: true,
@@ -41,9 +41,9 @@ userSchema.methods.generateAuthToken = function () {
   return token;
 };
 
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model<UserSchema, UserModel>('User', userSchema);
 
-export const validateUser = (user: User) => {
+export const validateUser = (user: UserSchema) => {
   const schema = Joi.object({
     name: Joi.string().min(5).max(50).required(),
     email: Joi.string().min(5).max(255).required().email(),

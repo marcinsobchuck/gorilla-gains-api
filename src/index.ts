@@ -3,7 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 
 import { authRouter } from './routes/auth';
-import { usersRouter } from './routes/users';
+import { usersRouter } from './routes/users.route';
 
 const app = express();
 
