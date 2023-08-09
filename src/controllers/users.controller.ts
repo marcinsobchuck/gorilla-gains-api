@@ -30,12 +30,7 @@ export class UsersController {
     const { error } = validateUser(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await userService.updateUser(
-      req.params.id,
-      req.body.name,
-      req.body.phone,
-      req.body.isGold
-    );
+    const user = await userService.updateUser(req.params.id, req.body.name, req.body.phone);
 
     if (!user) return res.status(404).send('There is no user with the given ID');
 

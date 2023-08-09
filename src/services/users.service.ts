@@ -28,13 +28,12 @@ export class UserService {
     return user;
   }
 
-  async updateUser(id: string, name: string, phone: string, isGold: boolean) {
+  async updateUser(id: string, name: string, phone: string) {
     const user = await User.findByIdAndUpdate(
       id,
       {
         name,
-        phone,
-        isGold
+        phone
       },
       { new: true }
     );

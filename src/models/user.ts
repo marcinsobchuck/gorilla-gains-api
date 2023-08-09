@@ -1,11 +1,21 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import mongoose, { Model } from 'mongoose';
+
+declare global {
+  namespace Express {
+    interface User {
+      isAdmin: boolean;
+    }
+  }
+}
 
 interface UserSchema {
   name: string;
   email: string;
   password: string;
+  isAdmin: boolean;
 }
 
 interface UserMethods {
@@ -33,11 +43,12 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
     required: true,
     minlength: 5,
     maxlength: 1024
-  }
+  },
+  isAdmin: Boolean
 });
 
 userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this.id }, process.env.JWT_SECRET as string);
+  const token = jwt.sign({ _id: this.id, isAdmin: this.isAdmin }, process.env.JWT_SECRET as string);
   return token;
 };
 
