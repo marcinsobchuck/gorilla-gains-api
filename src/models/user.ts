@@ -1,34 +1,15 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
-import mongoose, { Model } from 'mongoose';
+import mongoose from 'mongoose';
 
-declare global {
-  namespace Express {
-    interface User {
-      isAdmin: boolean;
-    }
-  }
-}
-
-interface UserSchema {
-  name: string;
-  email: string;
-  password: string;
-  isAdmin: boolean;
-}
-
-interface UserMethods {
-  generateAuthToken(): string;
-}
-
-type UserModel = Model<UserSchema, object, UserMethods>;
+import { UserMethods, UserModel, UserSchema } from './types/user.types';
 
 const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
   name: {
     type: String,
     required: true,
-    minlength: 5,
+    minlength: 3,
     maxlength: 50
   },
   email: {
@@ -44,6 +25,24 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
     minlength: 5,
     maxlength: 1024
   },
+  age: {
+    type: Number,
+    min: 1,
+    max: 200
+  },
+  weight: {
+    type: Number,
+    required: false,
+    min: 1,
+    max: 300
+  },
+  desiredWeight: {
+    type: Number,
+    required: false,
+    min: 1,
+    max: 300
+  },
+  goal: [String],
   isAdmin: Boolean
 });
 
@@ -58,7 +57,11 @@ export const validateUser = (user: UserSchema) => {
   const schema = Joi.object({
     name: Joi.string().min(5).max(50).required(),
     email: Joi.string().min(5).max(255).required().email(),
-    password: Joi.string().min(5).max(255).required()
+    password: Joi.string().min(5).max(255).required(),
+    age: Joi.number().min(1).max(200),
+    weight: Joi.number().min(1).max(300),
+    desiredWeight: Joi.number().min(1).max(300),
+    goal: Joi.array().items(Joi.string())
   });
 
   return schema.validate(user);
