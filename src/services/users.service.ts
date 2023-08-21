@@ -7,7 +7,16 @@ export class UserService {
     return User.find().sort('name');
   }
 
-  async createUser(name: string, email: string, password: string) {
+  async createUser(
+    name: string,
+    email: string,
+    password: string,
+    dueDate?: Date,
+    age?: number,
+    weight?: number,
+    desiredWeight?: number,
+    goal?: string[]
+  ) {
     let user = await User.findOne({ email });
 
     if (user) {
@@ -20,7 +29,12 @@ export class UserService {
     user = new User({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      age,
+      weight,
+      desiredWeight,
+      dueDate,
+      goal
     });
 
     await user.save();

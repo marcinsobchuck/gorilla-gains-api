@@ -12,9 +12,22 @@ export class UsersController {
   }
 
   async createUser(req: Request, res: Response) {
-    const { name, email, password } = req.body;
+    const { name, email, password, age, weight, desiredWeight, goal, dueDate } = req.body;
+    const { error } = validateUser(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
+
     try {
-      const user = await userService.createUser(name, email, password);
+      const user = await userService.createUser(
+        name,
+        email,
+        password,
+        dueDate,
+        age,
+        weight,
+        desiredWeight,
+        goal
+      );
       const token = user.generateAuthToken();
       res.header('Authorization', token).send({
         id: user._id,

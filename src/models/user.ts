@@ -42,6 +42,10 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
     min: 1,
     max: 300
   },
+  dueDate: {
+    type: Date,
+    required: true
+  },
   goal: [String],
   isAdmin: Boolean
 });
@@ -61,6 +65,7 @@ export const validateUser = (user: UserSchema) => {
     age: Joi.number().min(1).max(200),
     weight: Joi.number().min(1).max(300),
     desiredWeight: Joi.number().min(1).max(300),
+    dueDate: Joi.date(),
     goal: Joi.array().items(Joi.string())
   });
 

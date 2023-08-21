@@ -16,6 +16,7 @@ export interface UserSchema {
   age: number;
   weight: number;
   desiredWeight: number;
+  dueDate: Date;
   goal: string[];
   isAdmin: boolean;
 }
