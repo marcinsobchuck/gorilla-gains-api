@@ -2,9 +2,13 @@ import bcrypt from 'bcrypt';
 
 import { User } from '../models/user';
 
-export class UserService {
+export class UsersService {
   async getAllUsers() {
     return User.find().sort('name');
+  }
+
+  async findByEmail(email: string) {
+    return User.findOne({ email });
   }
 
   async createUser(
@@ -17,7 +21,7 @@ export class UserService {
     desiredWeight?: number,
     goal?: string[]
   ) {
-    let user = await User.findOne({ email });
+    let user = await this.findByEmail(email);
 
     if (user) {
       throw new Error('User already registered');

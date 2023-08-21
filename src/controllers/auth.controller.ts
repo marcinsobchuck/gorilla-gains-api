@@ -3,7 +3,9 @@ import { Request, Response } from 'express';
 import Joi from 'joi';
 
 import { UserCredentials } from './types/auth.controller.types';
-import { User } from '../models/user';
+import { UsersService } from '../services/users.service';
+
+const usersService = new UsersService();
 
 export class AuthController {
   async authenticate(req: Request, res: Response) {
@@ -12,7 +14,7 @@ export class AuthController {
 
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await User.findOne({ email });
+    const user = await usersService.findByEmail(email);
 
     if (!user) return res.status(400).send('Invalid email or password');
 

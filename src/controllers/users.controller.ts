@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 
 import { validateUser } from '../models/user';
-import { UserService } from '../services/users.service';
+import { UsersService } from '../services/users.service';
 
-const userService = new UserService();
+const usersService = new UsersService();
 
 export class UsersController {
   async getAllUsers(req: Request, res: Response) {
-    const users = await userService.getAllUsers();
+    const users = await usersService.getAllUsers();
     res.send(users);
   }
 
@@ -18,7 +18,7 @@ export class UsersController {
     if (error) return res.status(400).send(error.details[0].message);
 
     try {
-      const user = await userService.createUser(
+      const user = await usersService.createUser(
         name,
         email,
         password,
@@ -43,7 +43,7 @@ export class UsersController {
     const { error } = validateUser(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await userService.updateUser(req.params.id, req.body.name, req.body.phone);
+    const user = await usersService.updateUser(req.params.id, req.body.name, req.body.phone);
 
     if (!user) return res.status(404).send('There is no user with the given ID');
 
@@ -51,7 +51,7 @@ export class UsersController {
   }
 
   async deleteUser(req: Request, res: Response) {
-    const user = await userService.deleteUser(req.params.id);
+    const user = await usersService.deleteUser(req.params.id);
 
     if (!user) return res.status(404).send('There is no user with the given ID');
 
