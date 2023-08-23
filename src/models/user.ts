@@ -3,7 +3,7 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
-import { UserMethods, UserModel, UserSchema } from './types/user.types';
+import { UserDto, UserMethods, UserModel, UserSchema } from './types/user.types';
 
 const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
   name: {
@@ -57,7 +57,7 @@ userSchema.methods.generateAuthToken = function () {
 
 export const User = mongoose.model<UserSchema, UserModel>('User', userSchema);
 
-export const validateUser = (user: UserSchema) => {
+export const validateUser = (userDto: UserDto) => {
   const schema = Joi.object({
     name: Joi.string().min(5).max(50).required(),
     email: Joi.string().min(5).max(255).required().email(),
@@ -69,5 +69,5 @@ export const validateUser = (user: UserSchema) => {
     goal: Joi.array().items(Joi.string())
   });
 
-  return schema.validate(user);
+  return schema.validate(userDto);
 };

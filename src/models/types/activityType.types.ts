@@ -5,3 +5,8 @@ export interface ActivityTypeSchema {
   type: ActivityTypes;
   category: Category;
 }
+
+export interface ActivityTypeDto {
+  type: ActivityTypes;
+  category: Category;
+}

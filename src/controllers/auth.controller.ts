@@ -1,14 +1,14 @@
 import bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import Joi from 'joi';
 
-import { UserCredentials } from './types/auth.controller.types';
+import { AuthenticateRequest, UserCredentials } from './types/auth.controller.types';
 import { UsersService } from '../services/users.service';
 
 const usersService = new UsersService();
 
 export class AuthController {
-  async authenticate(req: Request, res: Response) {
+  async authenticate(req: AuthenticateRequest, res: Response) {
     const { error } = validateCredentials(req.body);
     const { email, password } = req.body;
 

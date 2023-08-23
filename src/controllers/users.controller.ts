@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+import { CreateUserRequest } from './types/users.types';
 import { validateUser } from '../models/user';
 import { UsersService } from '../services/users.service';
 
@@ -11,23 +12,13 @@ export class UsersController {
     res.send(users);
   }
 
-  async createUser(req: Request, res: Response) {
-    const { name, email, password, age, weight, desiredWeight, goal, dueDate } = req.body;
+  async createUser(req: CreateUserRequest, res: Response) {
     const { error } = validateUser(req.body);
 
     if (error) return res.status(400).send(error.details[0].message);
 
     try {
-      const user = await usersService.createUser(
-        name,
-        email,
-        password,
-        dueDate,
-        age,
-        weight,
-        desiredWeight,
-        goal
-      );
+      const user = await usersService.createUser(req.body);
       const token = user.generateAuthToken();
       res.header('Authorization', token).send({
         id: user._id,
@@ -37,24 +28,5 @@ export class UsersController {
     } catch (error: any) {
       res.status(400).send(error.message);
     }
-  }
-
-  async updateUser(req: Request, res: Response) {
-    const { error } = validateUser(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
-    const user = await usersService.updateUser(req.params.id, req.body.name, req.body.phone);
-
-    if (!user) return res.status(404).send('There is no user with the given ID');
-
-    res.send(user);
-  }
-
-  async deleteUser(req: Request, res: Response) {
-    const user = await usersService.deleteUser(req.params.id);
-
-    if (!user) return res.status(404).send('There is no user with the given ID');
-
-    res.send(user);
   }
 }

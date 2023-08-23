@@ -1,13 +1,14 @@
-import { ActivityTypes } from '../enum/activityTypes.enum';
-import { Category } from '../enum/categories.enum';
 import { ActivityType } from '../models/activityType';
+import { ActivityTypeDto } from '../models/types/activityType.types';
 
 export class ActivityTypesService {
   async getAll() {
-    return ActivityType.find();
+    return await ActivityType.find();
   }
 
-  async createActivityType(type: ActivityTypes, category: Category) {
+  async createActivityType(activityTypeDto: ActivityTypeDto) {
+    const { type } = activityTypeDto;
+
     let activityType = await ActivityType.findOne({
       type
     });
@@ -15,10 +16,7 @@ export class ActivityTypesService {
       throw new Error('Activity already exists');
     }
 
-    activityType = new ActivityType({
-      type,
-      category
-    });
+    activityType = new ActivityType(activityTypeDto);
 
     await activityType.save();
 

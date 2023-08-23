@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import mongoose from 'mongoose';
 
-import { ActivityTypeSchema } from './types/activityType.types';
+import { ActivityTypeDto, ActivityTypeSchema } from './types/activityType.types';
 import { ActivityTypes } from '../enum/activityTypes.enum';
 import { Category } from '../enum/categories.enum';
 
@@ -20,7 +20,7 @@ const activityTypeSchema = new mongoose.Schema({
 
 export const ActivityType = mongoose.model<ActivityTypeSchema>('ActivityType', activityTypeSchema);
 
-export const validateActivityType = (activityType: ActivityTypeSchema) => {
+export const validateActivityType = (activityTypeDto: ActivityTypeDto) => {
   const schema = Joi.object({
     type: Joi.string()
       .valid(...Object.values(ActivityTypes))
@@ -30,5 +30,5 @@ export const validateActivityType = (activityType: ActivityTypeSchema) => {
       .required()
   });
 
-  return schema.validate(activityType);
+  return schema.validate(activityTypeDto);
 };

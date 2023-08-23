@@ -1,6 +1,8 @@
 import express from 'express';
 import passport from 'passport';
 
+import '../middleware/auth';
+
 import { ActivityTypesController } from '../controllers/activityTypes.controller';
 import { admin } from '../middleware/admin';
 

@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 
+import { UserDto } from '../models/types/user.types';
 import { User } from '../models/user';
 
 export class UsersService {
@@ -11,16 +12,8 @@ export class UsersService {
     return User.findOne({ email });
   }
 
-  async createUser(
-    name: string,
-    email: string,
-    password: string,
-    dueDate?: Date,
-    age?: number,
-    weight?: number,
-    desiredWeight?: number,
-    goal?: string[]
-  ) {
+  async createUser(userDto: UserDto) {
+    const { email, password } = userDto;
     let user = await this.findByEmail(email);
 
     if (user) {
@@ -31,36 +24,12 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     user = new User({
-      name,
-      email,
-      password: hashedPassword,
-      age,
-      weight,
-      desiredWeight,
-      dueDate,
-      goal
+      ...userDto,
+      password: hashedPassword
     });
 
     await user.save();
 
-    return user;
-  }
-
-  async updateUser(id: string, name: string, phone: string) {
-    const user = await User.findByIdAndUpdate(
-      id,
-      {
-        name,
-        phone
-      },
-      { new: true }
-    );
-
-    return user;
-  }
-
-  async deleteUser(id: string) {
-    const user = await User.findByIdAndRemove(id);
     return user;
   }
 }

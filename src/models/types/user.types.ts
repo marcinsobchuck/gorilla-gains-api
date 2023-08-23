@@ -26,3 +26,14 @@ export interface UserMethods {
 }
 
 export type UserModel = Model<UserSchema, object, UserMethods>;
+
+export interface UserDto {
+  name: string;
+  email: string;
+  password: string;
+  age: number;
+  weight: number;
+  desiredWeight: number;
+  dueDate: Date;
+  goal: string[];
+}
