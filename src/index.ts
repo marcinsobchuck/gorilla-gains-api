@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 
 import { activityTypesRouter } from './routes/activityTypes.route';
 import { authRouter } from './routes/auth.route';
+import { exercisesRouter } from './routes/exercises.route';
 import { usersRouter } from './routes/users.route';
 
 const app = express();
@@ -16,6 +17,7 @@ mongoose
 app.use(express.json(), express.urlencoded({ extended: true }));
 
 app.use('/api/activityTypes', activityTypesRouter);
+app.use('/api/exercises', exercisesRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/auth', authRouter);
 
