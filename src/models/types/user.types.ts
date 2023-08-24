@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { Model } from 'mongoose';
+import { Document, Model, Types } from 'mongoose';
+
+import { ActivitySchema } from './activity.types';
 
 declare global {
   namespace Express {
-    interface User {
+    interface User extends Document {
       isAdmin: boolean;
+      activities: Types.DocumentArray<ActivitySchema>;
     }
   }
 }
@@ -18,14 +21,21 @@ export interface UserSchema {
   desiredWeight: number;
   dueDate: Date;
   goal: string[];
+  activities: ActivitySchema[];
   isAdmin: boolean;
 }
+
+export type UserDocumentProps = {
+  activities: Types.DocumentArray<ActivitySchema>;
+};
 
 export interface UserMethods {
   generateAuthToken(): string;
 }
 
-export type UserModel = Model<UserSchema, object, UserMethods>;
+type UserDocumentOverride = UserDocumentProps & UserMethods;
+
+export type UserModel = Model<UserSchema, object, UserDocumentOverride>;
 
 export interface UserDto {
   name: string;

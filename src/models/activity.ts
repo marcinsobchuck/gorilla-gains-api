@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 import { ActivityDto, ActivitySchema } from './types/activity.types';
 
-const activitySchema = new mongoose.Schema({
+export const activitySchema = new mongoose.Schema({
   type: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ActivityType'
