@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-import { activitySchema } from './activity';
 import { UserDto, UserMethods, UserModel, UserSchema } from './types/user.types';
 
 const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
@@ -48,7 +47,7 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
     required: true
   },
   goal: [String],
-  activities: [activitySchema],
+  activities: [{ type: Schema.Types.ObjectId, ref: 'Activity' }],
   isAdmin: Boolean
 });
 

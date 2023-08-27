@@ -2,20 +2,18 @@ import Joi from 'joi';
 import mongoose from 'mongoose';
 
 import { ActivityDto, ActivitySchema } from './types/activity.types';
+import { ActivityTypes } from '../enum/activityTypes.enum';
 
 export const activitySchema = new mongoose.Schema({
   type: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ActivityType'
+    type: String,
+    enum: Object.values(ActivityTypes)
   },
   date: Date,
   duration: Number,
   exercises: [
     {
-      exercise: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Exercise'
-      },
+      exercise: String,
       sets: [
         {
           reps: Number,
@@ -40,7 +38,9 @@ export const validateActivity = (activityDto: ActivityDto) => {
   });
 
   const activitySchema = Joi.object({
-    type: Joi.string().required(),
+    type: Joi.string()
+      .valid(...Object.values(ActivityTypes))
+      .required(),
     date: Joi.date().required(),
     duration: Joi.number().required(),
     exercises: Joi.array().items(exerciseSchema).required()

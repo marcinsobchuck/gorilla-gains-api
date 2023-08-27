@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { ActivityTypes } from '../../enum/activityTypes.enum';
 
 interface Set {
   reps: number;
@@ -6,19 +6,19 @@ interface Set {
 }
 
 interface Exercise {
-  exercise: Types.ObjectId;
+  exercise: string;
   sets: Set[];
 }
 
 export interface ActivitySchema {
-  type: Types.ObjectId;
+  type: ActivityTypes;
   exercises: Exercise[];
   date: Date;
   duration: number;
 }
 
 export interface ActivityDto {
-  type: Types.ObjectId;
+  type: ActivityTypes;
   exercises: Exercise[];
   date: Date;
   duration: number;

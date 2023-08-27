@@ -10,7 +10,11 @@ const exercisesController = new ExercisesController();
 
 export const exercisesRouter = express.Router();
 
-exercisesRouter.get('/', exercisesController.getExercisesPerActivityType);
+exercisesRouter.get(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  exercisesController.getExercisesPerActivityType
+);
 exercisesRouter.post(
   '/',
   [passport.authenticate('jwt', { session: false }), admin],

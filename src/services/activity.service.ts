@@ -4,16 +4,20 @@ import { ActivityDto } from '../models/types/activity.types';
 export class ActivityService {
   async createActivity(activityDto: ActivityDto, user: Express.User) {
     const activity = new Activity(activityDto);
-    user.activities.push(activity);
+    await activity.save();
+    user.activities.push(activity._id);
     await user.save();
     return activity;
   }
 
   async getAllActivites() {
-    const activities = await Activity.find()
-      .populate('type')
-      .populate('exercises.exercise', '-activityType')
-      .select('-exercises.sets._id');
+    const activities = await Activity.find();
+
     return activities;
+  }
+
+  async getUserActivities(user: Express.User) {
+    const userActivities = await user.populate('activities').then((user) => user.activities);
+    return userActivities;
   }
 }

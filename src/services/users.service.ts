@@ -5,7 +5,7 @@ import { User } from '../models/user';
 
 export class UsersService {
   async getAllUsers() {
-    return User.find().sort('name');
+    return User.find().populate('activities').sort('name');
   }
 
   async findByEmail(email: string) {
