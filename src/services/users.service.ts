@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { Types } from 'mongoose';
 
 import { UserDto } from '../models/types/user.types';
 import { User } from '../models/user';
@@ -31,5 +32,10 @@ export class UsersService {
     await user.save();
 
     return user;
+  }
+
+  async getUserActivities(user: Express.User) {
+    const userActivities = await user.populate('activities').then((user) => user.activities);
+    return userActivities;
   }
 }

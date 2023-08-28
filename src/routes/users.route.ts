@@ -16,3 +16,8 @@ usersRouter.get(
   usersController.getAllUsers
 );
 usersRouter.post('/', usersController.createUser);
+usersRouter.get(
+  '/activities',
+  passport.authenticate('jwt', { session: false }),
+  usersController.getUserActivities
+);

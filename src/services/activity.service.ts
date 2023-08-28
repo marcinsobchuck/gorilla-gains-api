@@ -15,9 +15,4 @@ export class ActivityService {
 
     return activities;
   }
-
-  async getUserActivities(user: Express.User) {
-    const userActivities = await user.populate('activities').then((user) => user.activities);
-    return userActivities;
-  }
 }

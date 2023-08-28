@@ -28,11 +28,4 @@ export class ActivityController {
     const activities = await activityService.getAllActivites();
     res.send(activities);
   }
-
-  async getUserActivities(req: Request, res: Response) {
-    if (req.user) {
-      const userActivities = await activityService.getUserActivities(req.user);
-      res.send(userActivities);
-    }
-  }
 }

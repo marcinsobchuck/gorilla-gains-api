@@ -29,4 +29,11 @@ export class UsersController {
       res.status(400).send(error.message);
     }
   }
+
+  async getUserActivities(req: Request, res: Response) {
+    if (req.user) {
+      const userActivities = await usersService.getUserActivities(req.user);
+      res.send(userActivities);
+    }
+  }
 }
