@@ -38,4 +38,15 @@ export class UsersService {
     const userActivities = await user.populate('activities').then((user) => user.activities);
     return userActivities;
   }
+
+  async getActivitiesPerUserId(userId: Types.ObjectId) {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error('There is no user with given id');
+    }
+
+    const userActivities = await user.populate('activities').then((user) => user?.activities);
+    return userActivities;
+  }
 }

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { CreateUserRequest } from './types/users.types';
+import { ActivitiesPerUserIdRequest, CreateUserRequest } from './types/users.types';
 import { validateUser } from '../models/user';
 import { UsersService } from '../services/users.service';
 
@@ -34,6 +34,15 @@ export class UsersController {
     if (req.user) {
       const userActivities = await usersService.getUserActivities(req.user);
       res.send(userActivities);
+    }
+  }
+
+  async getActivitiesPerUserId(req: ActivitiesPerUserIdRequest, res: Response) {
+    try {
+      const userActivities = await usersService.getActivitiesPerUserId(req.params.userId);
+      res.send(userActivities);
+    } catch (error: any) {
+      res.status(400).send(error.message);
     }
   }
 }

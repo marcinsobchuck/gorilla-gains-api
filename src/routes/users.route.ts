@@ -21,3 +21,8 @@ usersRouter.get(
   passport.authenticate('jwt', { session: false }),
   usersController.getUserActivities
 );
+usersRouter.get(
+  '/activities/:userId',
+  passport.authenticate('jwt', { session: false }),
+  usersController.getActivitiesPerUserId
+);
