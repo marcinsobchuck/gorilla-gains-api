@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 
-import { CreateActivityRequest, EditByActivityIdRequest } from './types/activity.types';
+import {
+  CreateActivityRequest,
+  DeleteByActivityIdRequest,
+  EditByActivityIdRequest
+} from './types/activity.types';
 import { validateActivity } from '../models/activity';
 import { ActivityService } from '../services/activity.service';
 
@@ -40,6 +44,17 @@ export class ActivityController {
         res.send(activity);
       } catch (err: any) {
         res.status(400).send(err.message);
+      }
+    }
+  }
+
+  async deleteActivity(req: DeleteByActivityIdRequest, res: Response) {
+    if (req.user) {
+      try {
+        const activity = await activityService.deleteActivity(req.params.activityId, req.user);
+        res.send(activity);
+      } catch (error: any) {
+        res.status(400).send(error.message);
       }
     }
   }

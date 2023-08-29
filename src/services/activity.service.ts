@@ -27,4 +27,17 @@ export class ActivityService {
 
     return result;
   }
+
+  async deleteActivity(activityId: string, user: Express.User) {
+    const activityIndex = user.activities.findIndex((item) => String(item) === activityId);
+
+    if (activityIndex === -1) {
+      throw new Error('There is no activity with given id that is connected to current user');
+    }
+
+    const userActivities = user.activities;
+    userActivities.splice(activityIndex, 1);
+    user.save();
+    return await Activity.findByIdAndDelete(activityId);
+  }
 }

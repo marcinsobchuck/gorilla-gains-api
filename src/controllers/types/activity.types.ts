@@ -9,3 +9,9 @@ interface EditByActivityIdRequestParams {
 }
 
 export type EditByActivityIdRequest = Request<EditByActivityIdRequestParams, any, ActivityDto>;
+
+interface DeleteByActivityIdParams {
+  activityId: string;
+}
+
+export type DeleteByActivityIdRequest = Request<DeleteByActivityIdParams>;

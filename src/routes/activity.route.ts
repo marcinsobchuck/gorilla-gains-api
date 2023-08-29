@@ -25,3 +25,8 @@ activityRouter.patch(
   passport.authenticate('jwt', { session: false }),
   activityController.editActivityById
 );
+activityRouter.delete(
+  '/:activityId',
+  passport.authenticate('jwt', { session: false }),
+  activityController.deleteActivity
+);
