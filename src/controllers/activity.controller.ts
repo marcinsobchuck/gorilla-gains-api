@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { CreateActivityRequest } from './types/activity.types';
+import { CreateActivityRequest, EditByActivityIdRequest } from './types/activity.types';
 import { validateActivity } from '../models/activity';
 import { ActivityService } from '../services/activity.service';
 
@@ -27,5 +27,20 @@ export class ActivityController {
   async getAllActivities(req: Request, res: Response) {
     const activities = await activityService.getAllActivites();
     res.send(activities);
+  }
+
+  async editActivityById(req: EditByActivityIdRequest, res: Response) {
+    if (req.user) {
+      try {
+        const activity = await activityService.editActivityById(
+          req.params.activityId,
+          req.user,
+          req.body
+        );
+        res.send(activity);
+      } catch (err: any) {
+        res.status(400).send(err.message);
+      }
+    }
   }
 }

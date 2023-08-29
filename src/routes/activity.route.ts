@@ -20,3 +20,8 @@ activityRouter.post(
   passport.authenticate('jwt', { session: false }),
   activityController.createActivity
 );
+activityRouter.patch(
+  '/:activityId',
+  passport.authenticate('jwt', { session: false }),
+  activityController.editActivityById
+);

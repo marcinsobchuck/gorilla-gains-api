@@ -15,4 +15,16 @@ export class ActivityService {
 
     return activities;
   }
+
+  async editActivityById(activityId: string, user: Express.User, activityDto: ActivityDto) {
+    const activity = user.activities.find((item) => String(item) === activityId);
+
+    if (!activity) {
+      throw new Error('There is no activity with given id that is connected to current user');
+    }
+
+    const result = await Activity.findByIdAndUpdate(activityId, activityDto, { new: true });
+
+    return result;
+  }
 }
