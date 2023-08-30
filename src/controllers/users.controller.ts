@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 
-import { ActivitiesPerUserIdRequest, CreateUserRequest } from './types/users.types';
+import {
+  ActivitiesPerUserIdRequest,
+  CreateUserRequest,
+  GetUserActivitiesRequest
+} from './types/users.types';
 import { validateUser } from '../models/user';
 import { UsersService } from '../services/users.service';
 
@@ -30,9 +34,10 @@ export class UsersController {
     }
   }
 
-  async getUserActivities(req: Request, res: Response) {
+  async getUserActivities(req: GetUserActivitiesRequest, res: Response) {
     if (req.user) {
-      const userActivities = await usersService.getUserActivities(req.user);
+      const { type } = req.query;
+      const userActivities = await usersService.getUserActivities(req.user, type);
       res.send(userActivities);
     }
   }

@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
 
+import { ActivityTypes } from '../enum/activityTypes.enum';
+import { ActivitySchema } from '../models/types/activity.types';
 import { UserDto } from '../models/types/user.types';
 import { User } from '../models/user';
 
@@ -34,8 +36,15 @@ export class UsersService {
     return user;
   }
 
-  async getUserActivities(user: Express.User) {
-    const userActivities = await user.populate('activities').then((user) => user.activities);
+  async getUserActivities(user: Express.User, type?: ActivityTypes) {
+    let userActivities = await user
+      .populate<{ activities: ActivitySchema[] }>('activities')
+      .then((user) => user.activities);
+
+    if (type) {
+      userActivities = userActivities.filter((activity) => activity.type === type);
+    }
+
     return userActivities;
   }
 
