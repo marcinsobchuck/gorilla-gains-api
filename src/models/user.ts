@@ -3,7 +3,7 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import mongoose, { Schema } from 'mongoose';
 
-import { UserDto, UserMethods, UserModel, UserSchema } from './types/user.types';
+import { CreateUserDto, EditUserDto, UserMethods, UserModel, UserSchema } from './types/user.types';
 
 const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
   name: {
@@ -32,19 +32,21 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
   },
   weight: {
     type: Number,
-    required: false,
     min: 1,
     max: 300
   },
   desiredWeight: {
     type: Number,
-    required: false,
+    min: 1,
+    max: 300
+  },
+  height: {
+    type: Number,
     min: 1,
     max: 300
   },
   dueDate: {
-    type: Date,
-    required: true
+    type: Date
   },
   goal: [String],
   activities: [{ type: Schema.Types.ObjectId, ref: 'Activity' }],
@@ -58,17 +60,25 @@ userSchema.methods.generateAuthToken = function () {
 
 export const User = mongoose.model<UserSchema, UserModel>('User', userSchema);
 
-export const validateUser = (userDto: UserDto) => {
+export const validateEditUserInfo = (editUserInfoDto: EditUserDto) => {
   const schema = Joi.object({
-    name: Joi.string().min(5).max(50).required(),
-    email: Joi.string().min(5).max(255).required().email(),
-    password: Joi.string().min(5).max(255).required(),
     age: Joi.number().min(1).max(200),
     weight: Joi.number().min(1).max(300),
     desiredWeight: Joi.number().min(1).max(300),
     dueDate: Joi.date(),
+    height: Joi.number().min(1).max(300),
     goal: Joi.array().items(Joi.string())
   });
 
-  return schema.validate(userDto);
+  return schema.validate(editUserInfoDto);
+};
+
+export const validateCreateUser = (createUserDto: CreateUserDto) => {
+  const schema = Joi.object({
+    name: Joi.string().min(5).max(50).required(),
+    email: Joi.string().min(5).max(255).required().email(),
+    password: Joi.string().min(5).max(255).required()
+  });
+
+  return schema.validate(createUserDto);
 };

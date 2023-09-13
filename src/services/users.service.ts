@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 
 import { ActivityTypes } from '../enum/activityTypes.enum';
 import { ActivitySchema } from '../models/types/activity.types';
-import { UserDto } from '../models/types/user.types';
+import { CreateUserDto, EditUserDto } from '../models/types/user.types';
 import { User } from '../models/user';
 
 export class UsersService {
@@ -15,7 +15,7 @@ export class UsersService {
     return User.findOne({ email });
   }
 
-  async createUser(userDto: UserDto) {
+  async createUser(userDto: CreateUserDto) {
     const { email, password } = userDto;
     let user = await this.findByEmail(email);
 
@@ -34,6 +34,12 @@ export class UsersService {
     await user.save();
 
     return user;
+  }
+
+  async editUserInfo(user: Express.User, editUserInfoDto: EditUserDto) {
+    const updateUserInfo = await user.updateOne(editUserInfoDto, { new: true });
+
+    return updateUserInfo;
   }
 
   async getUserActivities(user: Express.User, type?: ActivityTypes) {

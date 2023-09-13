@@ -3,9 +3,10 @@ import { Request, Response } from 'express';
 import {
   ActivitiesPerUserIdRequest,
   CreateUserRequest,
+  EditUserInfoRequest,
   GetUserActivitiesRequest
 } from './types/users.types';
-import { validateUser } from '../models/user';
+import { validateCreateUser, validateEditUserInfo } from '../models/user';
 import { UsersService } from '../services/users.service';
 
 const usersService = new UsersService();
@@ -17,7 +18,7 @@ export class UsersController {
   }
 
   async createUser(req: CreateUserRequest, res: Response) {
-    const { error } = validateUser(req.body);
+    const { error } = validateCreateUser(req.body);
 
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -31,6 +32,21 @@ export class UsersController {
       });
     } catch (error: any) {
       res.status(400).send(error.message);
+    }
+  }
+
+  async editUserInfo(req: EditUserInfoRequest, res: Response) {
+    const { error } = validateEditUserInfo(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
+
+    if (req.user) {
+      try {
+        const user = await usersService.editUserInfo(req.user, req.body);
+        res.send(user);
+      } catch (error: any) {
+        res.status(400).send(error.message);
+      }
     }
   }
 
