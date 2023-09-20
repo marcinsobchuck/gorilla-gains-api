@@ -15,7 +15,6 @@ usersRouter.get(
   [passport.authenticate('jwt', { session: false }), admin],
   usersController.getAllUsers
 );
-usersRouter.post('/', usersController.createUser);
 usersRouter.patch(
   '/',
   passport.authenticate('jwt', { session: false }),

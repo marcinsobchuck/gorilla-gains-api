@@ -6,4 +6,5 @@ const authController = new AuthController();
 
 export const authRouter = express.Router();
 
-authRouter.post('/', authController.authenticate);
+authRouter.post('/login', authController.login);
+authRouter.post('/register', authController.register);

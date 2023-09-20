@@ -1,8 +1,7 @@
 import { Request } from 'express';
 
-export interface UserCredentials {
-  email: string;
-  password: string;
-}
+import { CreateUserDto, UserCredentials } from '../../models/types/user.types';
 
-export type AuthenticateRequest = Request<object, any, UserCredentials>;
+export type LoginRequest = Request<object, any, UserCredentials>;
+
+export type CreateUserRequest = Request<object, any, CreateUserDto>;

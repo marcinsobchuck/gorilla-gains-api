@@ -1,34 +1,40 @@
-import bcrypt from 'bcrypt';
 import { Response } from 'express';
-import Joi from 'joi';
 
-import { AuthenticateRequest, UserCredentials } from './types/auth.controller.types';
+import { CreateUserRequest, LoginRequest } from './types/auth.controller.types';
+import { validateCreateUser, validateCredentials } from '../models/user';
 import { UsersService } from '../services/users.service';
 
 const usersService = new UsersService();
 
 export class AuthController {
-  async authenticate(req: AuthenticateRequest, res: Response) {
+  async login(req: LoginRequest, res: Response) {
     const { error } = validateCredentials(req.body);
-    const { email, password } = req.body;
 
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await usersService.findByEmail(email);
+    try {
+      const accessToken = await usersService.login(req.body);
+      res.send(accessToken);
+    } catch (error: any) {
+      res.status(400).send(error.message);
+    }
+  }
 
-    if (!user) return res.status(400).send('Invalid email or password');
+  async register(req: CreateUserRequest, res: Response) {
+    const { error } = validateCreateUser(req.body);
 
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) return res.status(400).send('Invalid email or password');
-    const token = user.generateAuthToken();
-    res.send(token);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    try {
+      const user = await usersService.register(req.body);
+      const token = user.generateAuthToken();
+      res.header('Authorization', token).send({
+        id: user._id,
+        name: user.name,
+        email: user.email
+      });
+    } catch (error: any) {
+      res.status(400).send(error.message);
+    }
   }
 }
-
-const validateCredentials = (credentials: UserCredentials) => {
-  const schema = Joi.object({
-    email: Joi.string().min(5).max(255).required().email(),
-    password: Joi.string().min(5).max(255).required()
-  });
-  return schema.validate(credentials);
-};

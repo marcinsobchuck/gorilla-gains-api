@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 
 import { ActivityTypes } from '../enum/activityTypes.enum';
 import { ActivitySchema } from '../models/types/activity.types';
-import { CreateUserDto, EditUserDto } from '../models/types/user.types';
+import { CreateUserDto, EditUserDto, UserCredentials } from '../models/types/user.types';
 import { User } from '../models/user';
 
 export class UsersService {
@@ -11,11 +11,11 @@ export class UsersService {
     return User.find().populate('activities').sort('name');
   }
 
-  async findByEmail(email: string) {
-    return User.findOne({ email });
+  private async findByEmail(email: string) {
+    return await User.findOne({ email });
   }
 
-  async createUser(userDto: CreateUserDto) {
+  async register(userDto: CreateUserDto) {
     const { email, password } = userDto;
     let user = await this.findByEmail(email);
 
@@ -36,10 +36,29 @@ export class UsersService {
     return user;
   }
 
-  async editUserInfo(user: Express.User, editUserInfoDto: EditUserDto) {
-    const updateUserInfo = await user.updateOne(editUserInfoDto, { new: true });
+  async login(userCredentials: UserCredentials) {
+    const { email, password } = userCredentials;
+    const user = await this.findByEmail(email);
 
-    return updateUserInfo;
+    if (!user) {
+      throw new Error('Invalid email or password');
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+
+    if (!validPassword) {
+      throw new Error('Invalid email or password');
+    }
+
+    const token = user.generateAuthToken();
+
+    return token;
+  }
+
+  async editUserInfo(user: Express.User, editUserInfoDto: EditUserDto) {
+    const updateUserInfo = await user.updateOne(editUserInfoDto);
+
+    await updateUserInfo;
   }
 
   async getUserActivities(user: Express.User, type?: ActivityTypes) {

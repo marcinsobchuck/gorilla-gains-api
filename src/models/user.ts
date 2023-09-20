@@ -3,7 +3,14 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import mongoose, { Schema } from 'mongoose';
 
-import { CreateUserDto, EditUserDto, UserMethods, UserModel, UserSchema } from './types/user.types';
+import {
+  CreateUserDto,
+  EditUserDto,
+  UserCredentials,
+  UserMethods,
+  UserModel,
+  UserSchema
+} from './types/user.types';
 
 const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
   name: {
@@ -81,4 +88,12 @@ export const validateCreateUser = (createUserDto: CreateUserDto) => {
   });
 
   return schema.validate(createUserDto);
+};
+
+export const validateCredentials = (credentials: UserCredentials) => {
+  const schema = Joi.object({
+    email: Joi.string().min(5).max(255).required().email(),
+    password: Joi.string().min(5).max(255).required()
+  });
+  return schema.validate(credentials);
 };
