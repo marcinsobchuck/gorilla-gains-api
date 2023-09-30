@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import cors from 'cors';
 import express from 'express';
 import mongoose from 'mongoose';
 
@@ -16,6 +17,7 @@ mongoose
   .catch((err) => console.log(err.message));
 
 app.use(express.json(), express.urlencoded({ extended: true }));
+app.use(cors({ origin: '*', exposedHeaders: 'Authorization' }));
 
 app.use('/api/activityTypes', activityTypesRouter);
 app.use('/api/exercises', exercisesRouter);
