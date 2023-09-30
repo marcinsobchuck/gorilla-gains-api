@@ -17,9 +17,11 @@ export const activitySchema = new mongoose.Schema({
       sets: [
         {
           reps: Number,
-          load: Number
+          load: Number,
+          _id: false
         }
-      ]
+      ],
+      _id: false
     }
   ]
 });

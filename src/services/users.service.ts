@@ -31,9 +31,11 @@ export class UsersService {
       password: hashedPassword
     });
 
+    const token = user.generateAuthToken();
+
     await user.save();
 
-    return user;
+    return token;
   }
 
   async login(userCredentials: UserCredentials) {

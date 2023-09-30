@@ -13,8 +13,8 @@ export class AuthController {
     if (error) return res.status(400).send(error.details[0].message);
 
     try {
-      const accessToken = await usersService.login(req.body);
-      res.send(accessToken);
+      const token = await usersService.login(req.body);
+      res.send(token);
     } catch (error: any) {
       res.status(400).send(error.message);
     }
@@ -26,13 +26,8 @@ export class AuthController {
     if (error) return res.status(400).send(error.details[0].message);
 
     try {
-      const user = await usersService.register(req.body);
-      const token = user.generateAuthToken();
-      res.header('Authorization', token).send({
-        id: user._id,
-        name: user.name,
-        email: user.email
-      });
+      const token = await usersService.register(req.body);
+      res.send(token);
     } catch (error: any) {
       res.status(400).send(error.message);
     }
