@@ -16,7 +16,7 @@ export class AuthController {
       const token = await usersService.login(req.body);
       res.send(token);
     } catch (error: any) {
-      res.status(400).send(error.message);
+      res.status(401).send(error.message);
     }
   }
 
@@ -29,7 +29,7 @@ export class AuthController {
       const token = await usersService.register(req.body);
       res.send(token);
     } catch (error: any) {
-      res.status(400).send(error.message);
+      res.status(409).send(error.message);
     }
   }
 }
