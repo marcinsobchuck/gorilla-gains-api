@@ -58,9 +58,7 @@ export class UsersService {
   }
 
   async editUserInfo(user: Express.User, editUserInfoDto: EditUserDto) {
-    const updateUserInfo = await user.updateOne(editUserInfoDto);
-
-    await updateUserInfo;
+    await user.updateOne(editUserInfoDto);
   }
 
   async getUserActivities(user: Express.User, type?: ActivityTypes) {

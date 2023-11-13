@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
     minlength: 3,
     maxlength: 50
   },
+  surname: {
+    type: String
+  },
   email: {
     type: String,
     required: true,
@@ -37,6 +40,9 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
     min: 1,
     max: 200
   },
+  gender: {
+    type: String
+  },
   weight: {
     type: Number,
     min: 1,
@@ -52,10 +58,10 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
     min: 1,
     max: 300
   },
-  dueDate: {
+  dueDateWeight: {
     type: Date
   },
-  goal: [String],
+  goals: [String],
   activities: [{ type: Schema.Types.ObjectId, ref: 'Activity' }],
   isAdmin: Boolean
 });
@@ -72,12 +78,16 @@ export const User = mongoose.model<UserSchema, UserModel>('User', userSchema);
 
 export const validateEditUserInfo = (editUserInfoDto: EditUserDto) => {
   const schema = Joi.object({
+    name: Joi.string().min(5).max(50),
+    surname: Joi.string().optional().allow(''),
     age: Joi.number().min(1).max(200),
-    weight: Joi.number().min(1).max(300),
-    desiredWeight: Joi.number().min(1).max(300),
-    dueDate: Joi.date(),
+    gender: Joi.string().valid('male', 'female'),
     height: Joi.number().min(1).max(300),
-    goal: Joi.array().items(Joi.string())
+    weight: Joi.number().min(1).max(300),
+    activityLevel: Joi.string(),
+    desiredWeight: Joi.number().min(1).max(300),
+    dueDateWeight: Joi.date(),
+    goals: Joi.array().items(Joi.string())
   });
 
   return schema.validate(editUserInfoDto);

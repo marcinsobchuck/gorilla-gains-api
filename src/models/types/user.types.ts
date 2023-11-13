@@ -9,14 +9,16 @@ declare global {
 
 export interface UserSchema {
   name: string;
+  surname: string;
   email: string;
   password: string;
   age: number;
+  gender: string;
   weight: number;
   desiredWeight: number;
   height: number;
-  dueDate: Date;
-  goal: string[];
+  dueDateWeight: Date;
+  goals: string[];
   activities: Types.ObjectId[];
   isAdmin: boolean;
 }
@@ -28,11 +30,14 @@ export interface UserMethods {
 export type UserModel = Model<UserSchema, object, UserMethods>;
 
 export interface EditUserDto {
+  name?: string;
+  surname?: string;
   age?: number;
+  gender?: string;
+  height?: string;
   weight?: number;
   desiredWeight?: number;
-  height?: number;
-  dueDate?: Date;
+  dueDateWeight?: Date;
   goal?: string[];
 }
 
