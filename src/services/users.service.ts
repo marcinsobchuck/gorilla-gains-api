@@ -58,7 +58,10 @@ export class UsersService {
   }
 
   async editUserInfo(user: Express.User, editUserInfoDto: EditUserDto) {
-    await user.updateOne(editUserInfoDto);
+    const newUser = await User.findOneAndUpdate({ _id: user.id }, editUserInfoDto, {
+      new: true
+    }).select({ password: 0 });
+    return newUser;
   }
 
   async getUserActivities(user: Express.User, type?: ActivityTypes) {
