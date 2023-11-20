@@ -12,6 +12,11 @@ export const usersRouter = express.Router();
 
 usersRouter.get(
   '/',
+  passport.authenticate('jwt', { session: false }),
+  usersController.getCurrentUser
+);
+usersRouter.get(
+  '/',
   [passport.authenticate('jwt', { session: false }), admin],
   usersController.getAllUsers
 );

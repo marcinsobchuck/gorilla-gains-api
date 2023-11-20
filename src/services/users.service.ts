@@ -11,6 +11,10 @@ export class UsersService {
     return User.find().populate('activities').sort('name');
   }
 
+  async getCurrentUser(user: Express.User) {
+    return await User.findById(user.id).select({ activities: 0, password: 0 });
+  }
+
   private async findByEmail(email: string) {
     return await User.findOne({ email });
   }
@@ -65,12 +69,11 @@ export class UsersService {
   }
 
   async getUserActivities(user: Express.User, type?: ActivityTypes) {
-    let userActivities = await user
-      .populate<{ activities: ActivitySchema[] }>('activities')
-      .then((user) => user.activities);
+    const userActivities = (await user.populate<{ activities: ActivitySchema[] }>('activities'))
+      .activities;
 
     if (type) {
-      userActivities = userActivities.filter((activity) => activity.type === type);
+      return userActivities.filter((activity) => activity.type === type);
     }
 
     return userActivities;

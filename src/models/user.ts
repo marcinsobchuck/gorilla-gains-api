@@ -48,6 +48,9 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
     min: 1,
     max: 300
   },
+  activityLevel: {
+    type: String
+  },
   desiredWeight: {
     type: Number,
     min: 1,

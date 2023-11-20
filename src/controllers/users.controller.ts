@@ -16,6 +16,17 @@ export class UsersController {
     res.send(users);
   }
 
+  async getCurrentUser(req: Request, res: Response) {
+    if (req.user) {
+      try {
+        const currentUser = await usersService.getCurrentUser(req.user);
+        res.send(currentUser);
+      } catch (error: any) {
+        res.status(400).send(error.message);
+      }
+    }
+  }
+
   async editUserInfo(req: EditUserInfoRequest, res: Response) {
     const { error } = validateEditUserInfo(req.body);
 

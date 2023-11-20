@@ -15,6 +15,7 @@ export interface UserSchema {
   age: number;
   gender: string;
   weight: number;
+  activityLevel: string;
   desiredWeight: number;
   height: number;
   dueDateWeight: Date;
@@ -36,6 +37,7 @@ export interface EditUserDto {
   gender?: string;
   height?: string;
   weight?: number;
+  activityLevel: string;
   desiredWeight?: number;
   dueDateWeight?: Date;
   goal?: string[];
