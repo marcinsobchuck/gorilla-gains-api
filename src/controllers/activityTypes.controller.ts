@@ -1,14 +1,14 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
-import { CreateActivityTypeRequest } from './types/activityTypes.types';
+import { CreateActivityTypeRequest, GetActivityTypesRequest } from './types/activityTypes.types';
 import { validateActivityType } from '../models/activityType';
 import { ActivityTypesService } from '../services/activityTypes.service';
 
 const activityTypesService = new ActivityTypesService();
 
 export class ActivityTypesController {
-  async getAllActivityTypes(req: Request, res: Response) {
-    const activityTypes = await activityTypesService.getAll();
+  async getAllActivityTypes(req: GetActivityTypesRequest, res: Response) {
+    const activityTypes = await activityTypesService.getAll(req.query.filterText);
     res.send(activityTypes);
   }
 

@@ -1,9 +1,23 @@
+import { FilterQuery } from 'mongoose';
+
 import { ActivityType } from '../models/activityType';
-import { ActivityTypeDto } from '../models/types/activityType.types';
+import { ActivityTypeDto, ActivityTypeSchema } from '../models/types/activityType.types';
 
 export class ActivityTypesService {
-  async getAll() {
-    return await ActivityType.find();
+  async getAll(filterText: string) {
+    let filters: FilterQuery<ActivityTypeSchema> = {};
+
+    if (filterText) {
+      console.log({ filterText });
+
+      filters = {
+        type: {
+          $regex: filterText,
+          $options: 'i'
+        }
+      };
+    }
+    return await ActivityType.find(filters);
   }
 
   async createActivityType(activityTypeDto: ActivityTypeDto) {
