@@ -5,16 +5,12 @@ import { ActivityTypeDto, ActivityTypeSchema } from '../models/types/activityTyp
 
 export class ActivityTypesService {
   async getAll(filterText: string) {
-    let filters: FilterQuery<ActivityTypeSchema> = {};
+    const filters: FilterQuery<ActivityTypeSchema> = {};
 
     if (filterText) {
-      console.log({ filterText });
-
-      filters = {
-        type: {
-          $regex: filterText,
-          $options: 'i'
-        }
+      filters.type = {
+        $regex: filterText,
+        $options: 'i'
       };
     }
     return await ActivityType.find(filters);

@@ -1,11 +1,22 @@
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 
 import { Exercise } from '../models/exercise';
-import { ExerciseDto } from '../models/types/exercise.types';
+import { ExerciseDto, ExerciseSchema } from '../models/types/exercise.types';
 
 export class ExercisesService {
-  async getExercisesPerActivityType(activityTypeId: Types.ObjectId) {
-    return await Exercise.find({ activityType: activityTypeId }).populate('activityType');
+  async getExercisesPerActivityType(activityTypeId: Types.ObjectId, filterText: string) {
+    const filters: FilterQuery<ExerciseSchema> = {
+      activityType: activityTypeId
+    };
+
+    if (filterText) {
+      filters.name = {
+        $regex: filterText,
+        $options: 'i'
+      };
+    }
+
+    return await Exercise.find(filters).populate('activityType');
   }
 
   async createExercise(exerciseDto: ExerciseDto) {

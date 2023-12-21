@@ -5,6 +5,7 @@ import { ExerciseDto } from '../../models/types/exercise.types';
 
 interface ExercisesPerActivityTypeQuery {
   activityTypeId: Types.ObjectId;
+  filterText: string;
 }
 
 export type ExercisesPerActivityTypeRequest = Request<
