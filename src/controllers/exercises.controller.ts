@@ -8,11 +8,15 @@ const exercisesService = new ExercisesService();
 
 export class ExercisesController {
   async getExercisesPerActivityType(req: ExercisesPerActivityTypeRequest, res: Response) {
-    const exercises = await exercisesService.getExercisesPerActivityType(
-      req.query.activityTypeId,
-      req.query.filterText
-    );
-    res.send(exercises);
+    try {
+      const exercises = await exercisesService.getExercisesPerActivityType(
+        req.query.activityTypeId,
+        req.query.filterText
+      );
+      res.send(exercises);
+    } catch (err: any) {
+      res.status(400).send(err.message);
+    }
   }
 
   async createExercise(req: CreateExerciseRequest, res: Response) {
