@@ -1,12 +1,11 @@
-import { ActivityTypes } from '../../enum/activityTypes.enum';
 import { Category } from '../../enum/categories.enum';
 
 export interface ActivityTypeSchema {
-  type: ActivityTypes;
+  type: string;
   category: Category;
 }
 
 export interface ActivityTypeDto {
-  type: ActivityTypes;
+  type: string;
   category: Category;
 }
