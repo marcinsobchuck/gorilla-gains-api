@@ -7,10 +7,14 @@ import { ActivityTypes } from '../enum/activityTypes.enum';
 const strengthActivityTypes = [ActivityTypes.CALISTHENICS, ActivityTypes.WEIGHT_LIFTING];
 const enduranceActivityTypes = [
   ActivityTypes.SWIMMING,
-  ActivityTypes.RIDING_A_BIKE,
-  ActivityTypes.RUNNING
+  ActivityTypes.RIDING_A_BIKE_INTERVALS,
+  ActivityTypes.RUNNING_INTERVALS
 ];
-const otherActivityTypes = [ActivityTypes.WALKING];
+const otherActivityTypes = [
+  ActivityTypes.WALKING,
+  ActivityTypes.RUNNING,
+  ActivityTypes.RIDING_A_BIKE
+];
 
 const generateSetValidationSchema = (activityType: ActivityTypes) => {
   const commonSetSchema = Joi.object().keys({

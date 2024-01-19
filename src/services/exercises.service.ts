@@ -1,5 +1,6 @@
 import { FilterQuery, Types } from 'mongoose';
 
+import { ActivityType } from '../models/activityType';
 import { Exercise } from '../models/exercise';
 import { ExerciseDto, ExerciseSchema } from '../models/types/exercise.types';
 
@@ -21,6 +22,12 @@ export class ExercisesService {
 
   async createExercise(exerciseDto: ExerciseDto) {
     const { name, activityTypeId } = exerciseDto;
+
+    const activityType = await ActivityType.findById(activityTypeId);
+
+    if (!activityType) {
+      throw new Error(`There is no activityType with an id of ${activityTypeId}`);
+    }
 
     let exercise = await Exercise.findOne({ name });
     if (exercise) {
