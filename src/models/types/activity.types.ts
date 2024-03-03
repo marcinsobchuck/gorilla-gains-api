@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 import { ActivityTypes } from '../../enum/activityTypes.enum';
 
 interface Set {
@@ -6,7 +8,7 @@ interface Set {
 }
 
 interface Exercise {
-  exercise: string;
+  exercise: Types.ObjectId;
   sets: Set[];
 }
 
@@ -18,7 +20,7 @@ export interface ActivitySchema {
 }
 
 export interface ActivityDto {
-  type: ActivityTypes;
+  type: Types.ObjectId;
   exercises: Exercise[];
   date: Date;
   duration: number;

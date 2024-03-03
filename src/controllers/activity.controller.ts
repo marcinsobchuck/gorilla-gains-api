@@ -12,15 +12,16 @@ const activityService = new ActivityService();
 
 export class ActivityController {
   async createActivity(req: CreateActivityRequest, res: Response) {
-    const { error } = validateActivity(req.body);
-
-    if (error) return res.status(400).send(error.details[0].message);
-
     try {
+      const { error } = await validateActivity(req.body);
+
+      if (error) {
+        return res.status(400).send(error.details[0].message);
+      }
+
       const user = req.user;
       if (user) {
         const activity = await activityService.createActivity(req.body, user);
-
         res.send(activity);
       }
     } catch (err: any) {

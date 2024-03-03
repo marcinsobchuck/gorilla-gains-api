@@ -5,7 +5,7 @@ import { Exercise } from '../models/exercise';
 import { ExerciseDto, ExerciseSchema } from '../models/types/exercise.types';
 
 export class ExercisesService {
-  async getExercisesPerActivityType(activityTypeId: Types.ObjectId, filterText: string) {
+  async getExercisesPerActivityType(activityTypeId: Types.ObjectId, filterText?: string) {
     const filters: FilterQuery<ExerciseSchema> = {
       activityType: activityTypeId
     };
@@ -21,7 +21,7 @@ export class ExercisesService {
   }
 
   async createExercise(exerciseDto: ExerciseDto) {
-    const { name, activityTypeId } = exerciseDto;
+    const { name, activityTypeId, isStatic, additionalInfo } = exerciseDto;
 
     const activityType = await ActivityType.findById(activityTypeId);
 
@@ -30,13 +30,16 @@ export class ExercisesService {
     }
 
     let exercise = await Exercise.findOne({ name });
+
     if (exercise) {
       throw new Error('Exercise already exists');
     }
 
     exercise = new Exercise({
       activityType: activityTypeId,
-      name
+      name,
+      additionalInfo,
+      isStatic
     });
 
     await exercise.save();

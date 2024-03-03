@@ -1,10 +1,10 @@
-import { FilterQuery } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 
 import { ActivityType } from '../models/activityType';
 import { ActivityTypeDto, ActivityTypeSchema } from '../models/types/activityType.types';
 
 export class ActivityTypesService {
-  async getAll(filterText: string) {
+  async getAll(filterText?: string) {
     const filters: FilterQuery<ActivityTypeSchema> = {};
 
     if (filterText) {
@@ -31,5 +31,14 @@ export class ActivityTypesService {
     await activityType.save();
 
     return activityType;
+  }
+
+  async getCategoryForActivityType(type: Types.ObjectId) {
+    const activityType = await ActivityType.findById(type);
+    if (!activityType) {
+      throw new Error('No activity type with the given id');
+    }
+
+    return activityType.category;
   }
 }

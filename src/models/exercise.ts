@@ -13,6 +13,12 @@ const exerciseSchema = new mongoose.Schema({
     required: true,
     minlength: 3,
     maxlength: 100
+  },
+  isStatic: {
+    type: Boolean
+  },
+  additionalInfo: {
+    type: String
   }
 });
 
@@ -21,7 +27,9 @@ export const Exercise = mongoose.model<ExerciseSchema>('Exercise', exerciseSchem
 export const validateExercise = (exerciseDto: ExerciseDto) => {
   const schema = Joi.object({
     activityTypeId: Joi.string().required(),
-    name: Joi.string().min(3).max(255).required()
+    name: Joi.string().min(3).max(255).required(),
+    isStatic: Joi.boolean(),
+    additionalInfo: Joi.string()
   });
 
   return schema.validate(exerciseDto);
