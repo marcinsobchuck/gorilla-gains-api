@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 
 import {
+  ActivitiesPerUserIdRequest,
   CreateActivityRequest,
   DeleteByActivityIdRequest,
-  EditByActivityIdRequest
+  EditByActivityIdRequest,
+  GetUserActivitiesRequest
 } from './types/activity.types';
 import { validateActivity } from '../models/activity';
 import { ActivityService } from '../services/activity.service';
@@ -32,6 +34,23 @@ export class ActivityController {
   async getAllActivities(req: Request, res: Response) {
     const activities = await activityService.getAllActivites();
     res.send(activities);
+  }
+
+  async getUserActivities(req: GetUserActivitiesRequest, res: Response) {
+    if (req.user) {
+      const { type } = req.query;
+      const userActivities = await activityService.getUserActivities(req.user, type);
+      res.send(userActivities);
+    }
+  }
+
+  async getActivitiesPerUserId(req: ActivitiesPerUserIdRequest, res: Response) {
+    try {
+      const userActivities = await activityService.getActivitiesPerUserId(req.params.userId);
+      res.send(userActivities);
+    } catch (error: any) {
+      res.status(400).send(error.message);
+    }
   }
 
   async editActivityById(req: EditByActivityIdRequest, res: Response) {

@@ -15,6 +15,16 @@ activityRouter.get(
   [passport.authenticate('jwt', { session: false }), admin],
   activityController.getAllActivities
 );
+activityRouter.get(
+  '/user',
+  [passport.authenticate('jwt', { session: false })],
+  activityController.getUserActivities
+);
+activityRouter.get(
+  '/user/:userId',
+  [passport.authenticate('jwt', { session: false })],
+  activityController.getActivitiesPerUserId
+);
 activityRouter.post(
   '/',
   passport.authenticate('jwt', { session: false }),

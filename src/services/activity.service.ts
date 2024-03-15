@@ -1,5 +1,8 @@
+import { Types } from 'mongoose';
+
 import { Activity } from '../models/activity';
-import { ActivityDto } from '../models/types/activity.types';
+import { ActivityDto, ActivitySchema } from '../models/types/activity.types';
+import { User } from '../models/user';
 
 export class ActivityService {
   async createActivity(activityDto: ActivityDto, user: Express.User) {
@@ -16,6 +19,28 @@ export class ActivityService {
     const activities = await Activity.find().populate('type').populate('exercises.exercise');
 
     return activities;
+  }
+
+  async getUserActivities(user: Express.User, type?: Types.ObjectId) {
+    const userActivities = (await user.populate<{ activities: ActivitySchema[] }>('activities'))
+      .activities;
+
+    if (type) {
+      return userActivities.filter((activity) => activity.type === type);
+    }
+
+    return userActivities;
+  }
+
+  async getActivitiesPerUserId(userId: Types.ObjectId) {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error('There is no user with given id');
+    }
+
+    const userActivities = await user.populate('activities').then((user) => user?.activities);
+    return userActivities;
   }
 
   async editActivityById(activityId: string, user: Express.User, activityDto: ActivityDto) {

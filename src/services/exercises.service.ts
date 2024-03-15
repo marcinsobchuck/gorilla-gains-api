@@ -46,4 +46,10 @@ export class ExercisesService {
 
     return exercise;
   }
+
+  async getIsExerciseStatic(exerciseId: Types.ObjectId) {
+    const exercise = await Exercise.findById(exerciseId);
+    const isExerciseStatic = exercise?.isStatic;
+    return isExerciseStatic;
+  }
 }

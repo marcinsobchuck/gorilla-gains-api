@@ -1,6 +1,19 @@
 import { Request } from 'express';
+import { Types } from 'mongoose';
 
 import { ActivityDto } from '../../models/types/activity.types';
+
+interface ActivitiesPerUserIdParams {
+  userId: Types.ObjectId;
+}
+
+export type ActivitiesPerUserIdRequest = Request<ActivitiesPerUserIdParams>;
+
+interface GetUserActivitiesQuery {
+  type: Types.ObjectId;
+}
+
+export type GetUserActivitiesRequest = Request<object, any, any, GetUserActivitiesQuery>;
 
 export type CreateActivityRequest = Request<object, any, ActivityDto>;
 

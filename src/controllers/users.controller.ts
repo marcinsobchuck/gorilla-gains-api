@@ -1,10 +1,6 @@
 import { Request, Response } from 'express';
 
-import {
-  ActivitiesPerUserIdRequest,
-  EditUserInfoRequest,
-  GetUserActivitiesRequest
-} from './types/users.types';
+import { EditUserInfoRequest } from './types/users.types';
 import { validateEditUserInfo } from '../models/user';
 import { UsersService } from '../services/users.service';
 
@@ -39,23 +35,6 @@ export class UsersController {
       } catch (error: any) {
         res.status(400).send(error.message);
       }
-    }
-  }
-
-  async getUserActivities(req: GetUserActivitiesRequest, res: Response) {
-    if (req.user) {
-      const { type } = req.query;
-      const userActivities = await usersService.getUserActivities(req.user, type);
-      res.send(userActivities);
-    }
-  }
-
-  async getActivitiesPerUserId(req: ActivitiesPerUserIdRequest, res: Response) {
-    try {
-      const userActivities = await usersService.getActivitiesPerUserId(req.params.userId);
-      res.send(userActivities);
-    } catch (error: any) {
-      res.status(400).send(error.message);
     }
   }
 }

@@ -1,8 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Types } from 'mongoose';
 
-import { ActivityTypes } from '../enum/activityTypes.enum';
-import { ActivitySchema } from '../models/types/activity.types';
 import { CreateUserDto, EditUserDto, UserCredentials } from '../models/types/user.types';
 import { User } from '../models/user';
 
@@ -66,27 +63,5 @@ export class UsersService {
       new: true
     }).select({ password: 0 });
     return newUser;
-  }
-
-  async getUserActivities(user: Express.User, type?: ActivityTypes) {
-    const userActivities = (await user.populate<{ activities: ActivitySchema[] }>('activities'))
-      .activities;
-
-    if (type) {
-      return userActivities.filter((activity) => activity.type === type);
-    }
-
-    return userActivities;
-  }
-
-  async getActivitiesPerUserId(userId: Types.ObjectId) {
-    const user = await User.findById(userId);
-
-    if (!user) {
-      throw new Error('There is no user with given id');
-    }
-
-    const userActivities = await user.populate('activities').then((user) => user?.activities);
-    return userActivities;
   }
 }

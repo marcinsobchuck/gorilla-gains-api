@@ -25,13 +25,3 @@ usersRouter.patch(
   passport.authenticate('jwt', { session: false }),
   usersController.editUserInfo
 );
-usersRouter.get(
-  '/activities',
-  passport.authenticate('jwt', { session: false }),
-  usersController.getUserActivities
-);
-usersRouter.get(
-  '/activities/:userId',
-  passport.authenticate('jwt', { session: false }),
-  usersController.getActivitiesPerUserId
-);

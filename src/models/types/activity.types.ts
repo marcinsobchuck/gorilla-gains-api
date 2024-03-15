@@ -1,6 +1,6 @@
-import { Types } from 'mongoose';
+import { InferSchemaType, Types } from 'mongoose';
 
-import { ActivityTypes } from '../../enum/activityTypes.enum';
+import { activitySchema } from '../activity';
 
 interface Set {
   reps: number;
@@ -10,18 +10,24 @@ interface Set {
 interface Exercise {
   exercise: Types.ObjectId;
   sets: Set[];
+  withBreaks: boolean;
 }
 
-export interface ActivitySchema {
-  type: ActivityTypes;
-  exercises: Exercise[];
-  date: Date;
-  duration: number;
+interface Duration {
+  hours: number;
+  minutes: number;
+  seconds: number;
 }
+
+export type ActivitySchema = InferSchemaType<typeof activitySchema>;
 
 export interface ActivityDto {
   type: Types.ObjectId;
   exercises: Exercise[];
   date: Date;
-  duration: number;
+  distance?: number;
+  duration?: Duration;
+  notes?: string;
+  warmup: boolean;
+  repeatExercisesCount?: number;
 }
