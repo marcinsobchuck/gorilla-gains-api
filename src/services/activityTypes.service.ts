@@ -33,12 +33,12 @@ export class ActivityTypesService {
     return activityType;
   }
 
-  async getCategoryForActivityType(type: Types.ObjectId) {
+  async getActivityType(type: Types.ObjectId) {
     const activityType = await ActivityType.findById(type);
     if (!activityType) {
       throw new Error('No activity type with the given id');
     }
 
-    return activityType.category;
+    return activityType.type;
   }
 }

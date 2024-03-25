@@ -7,7 +7,6 @@ import { User } from '../models/user';
 export class ActivityService {
   async createActivity(activityDto: ActivityDto, user: Express.User) {
     const activity = new Activity(activityDto);
-    console.log(activity);
 
     await activity.save();
     user.activities.push(activity._id);

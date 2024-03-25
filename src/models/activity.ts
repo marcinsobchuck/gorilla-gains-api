@@ -2,12 +2,28 @@ import Joi from 'joi';
 import mongoose, { Types } from 'mongoose';
 
 import { ActivityDto, ActivitySchema } from './types/activity.types';
-import { Category } from '../enum/categories.enum';
+import { ActivityTypes } from '../enum/activityTypes.enum';
 import { ActivityTypesService } from '../services/activityTypes.service';
 import { ExercisesService } from '../services/exercises.service';
 
 const activityTypesService = new ActivityTypesService();
 const exercisesService = new ExercisesService();
+
+const validateSetKeys = (setKeys: string[], keys: string[], activityType: string) => {
+  const commonKeys = ['break'];
+
+  const allowedKeys = [...commonKeys, ...keys];
+
+  const invalidKeys = setKeys.filter((key) => !allowedKeys.includes(key));
+
+  if (invalidKeys.length > 0) {
+    throw new Error(
+      `Invalid fields for ${activityType} exercise: ${invalidKeys.join(
+        ', '
+      )}. These are allowed fields: ${keys.join(', ')}`
+    );
+  }
+};
 
 export const activitySchema = new mongoose.Schema({
   type: {
@@ -16,12 +32,6 @@ export const activitySchema = new mongoose.Schema({
     ref: 'ActivityType'
   },
   date: Date,
-  duration: {
-    hours: Number,
-    minutes: Number,
-    seconds: Number
-  },
-  distance: Number,
   exercises: [
     {
       exercise: {
@@ -89,22 +99,33 @@ const commonSetSchema = Joi.object({
 
 const strengthStaticSet = commonSetSchema.keys({
   duration: durationSchema.required(),
-  load: Joi.number().required()
+  load: Joi.number()
 });
 
 const strengthNonStaticSet = commonSetSchema.keys({
   reps: Joi.number().required(),
-  load: Joi.number().required()
+  load: Joi.number()
 });
 
 const enduranceSet = commonSetSchema.keys({
-  distance: Joi.number().required(),
+  distance: Joi.number(),
   duration: durationSchema.required()
 });
 
+const flexibilitySet = commonSetSchema.keys({
+  duration: durationSchema.required()
+});
+
+const setSchema = Joi.alternatives().try(
+  strengthStaticSet,
+  strengthNonStaticSet,
+  enduranceSet,
+  flexibilitySet
+);
+
 export const validateActivity = async (activityDto: ActivityDto) => {
-  const category = await activityTypesService.getCategoryForActivityType(activityDto.type);
-  const setSchema = Joi.alternatives().try(strengthStaticSet, strengthNonStaticSet, enduranceSet);
+  const activityType = await activityTypesService.getActivityType(activityDto.type);
+
   const exerciseSchema = Joi.object({
     exercise: Joi.string()
       .external((data) => checkValidExercise(data, activityDto.type))
@@ -118,46 +139,18 @@ export const validateActivity = async (activityDto: ActivityDto) => {
 
           for (const set of exercise.sets) {
             const setKeys = Object.keys(set);
-            const commonKeys = ['break'];
-            if (category === Category.STRENGTH) {
+            if (activityType === ActivityTypes.STRENGTH) {
               if (isExerciseStatic) {
-                const keys = ['duration', 'load'];
-                const allowedKeys = [...commonKeys, ...keys];
-
-                const invalidKeys = setKeys.filter((key) => !allowedKeys.includes(key));
-
-                if (invalidKeys.length > 0) {
-                  throw new Error(
-                    `Invalid fields for static exercise: ${invalidKeys.join(
-                      ', '
-                    )}. These are allowed fields: ${keys.join(', ')}`
-                  );
-                }
+                validateSetKeys(setKeys, ['duration', 'load'], activityType);
               } else {
-                const keys = ['reps', 'load'];
-                const allowedKeys = [...commonKeys, ...keys];
-                const invalidKeys = setKeys.filter((key) => !allowedKeys.includes(key));
-
-                if (invalidKeys.length > 0) {
-                  throw new Error(
-                    `Invalid fields for non-static exercise: ${invalidKeys.join(
-                      ', '
-                    )}. These are allowed fields: ${keys.join(', ')}`
-                  );
-                }
+                validateSetKeys(setKeys, ['reps', 'load'], activityType);
               }
-            } else if (category === Category.ENDURANCE) {
-              const keys = ['distance', 'duration'];
-              const allowedKeys = [...commonKeys, ...keys];
-              const invalidKeys = setKeys.filter((key) => !allowedKeys.includes(key));
-
-              if (invalidKeys.length > 0) {
-                throw new Error(
-                  `Invalid fields for endurance exercise: ${invalidKeys.join(
-                    ', '
-                  )}. These are allowed fields: ${keys.join(', ')}`
-                );
-              }
+            } else if (activityType === ActivityTypes.ENDURANCE) {
+              validateSetKeys(setKeys, ['distance', 'duration'], activityType);
+            } else if (activityType === ActivityTypes.FLEXIBILITY) {
+              validateSetKeys(setKeys, ['duration'], activityType);
+            } else if (activityType === ActivityTypes.BALANCE) {
+              validateSetKeys(setKeys, ['duration'], activityType);
             }
           }
         }
@@ -169,8 +162,6 @@ export const validateActivity = async (activityDto: ActivityDto) => {
     type: Joi.string().external(checkValidActivityType).required(),
     date: Joi.date().required(),
     exercises: Joi.array().items(exerciseSchema),
-    distance: category === Category.OTHER ? Joi.number().required() : Joi.forbidden(),
-    duration: category === Category.OTHER ? durationSchema.required() : Joi.forbidden(),
     notes: Joi.string().allow(''),
     warmup: Joi.boolean(),
     repeatExercisesCount: Joi.number()
