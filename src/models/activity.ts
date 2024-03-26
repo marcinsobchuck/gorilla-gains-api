@@ -26,6 +26,7 @@ const validateSetKeys = (setKeys: string[], keys: string[], activityType: string
 };
 
 export const activitySchema = new mongoose.Schema({
+  title: String,
   type: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -159,6 +160,7 @@ export const validateActivity = async (activityDto: ActivityDto) => {
   });
 
   const activitySchema = Joi.object({
+    title: Joi.string().required(),
     type: Joi.string().external(checkValidActivityType).required(),
     date: Joi.date().required(),
     exercises: Joi.array().items(exerciseSchema),

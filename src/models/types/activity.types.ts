@@ -22,6 +22,7 @@ interface Duration {
 export type ActivitySchema = InferSchemaType<typeof activitySchema>;
 
 export interface ActivityDto {
+  title: string;
   type: Types.ObjectId;
   exercises: Exercise[];
   date: Date;
