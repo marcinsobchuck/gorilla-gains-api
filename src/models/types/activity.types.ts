@@ -1,5 +1,7 @@
 import { InferSchemaType, Types } from 'mongoose';
 
+import { ActivityTypeSchema } from './activityType.types';
+import { ExerciseSchema } from './exercise.types';
 import { activitySchema } from '../activity';
 
 interface Set {
@@ -26,9 +28,20 @@ export interface ActivityDto {
   type: Types.ObjectId;
   exercises: Exercise[];
   date: Date;
-  distance?: number;
-  duration?: Duration;
   notes?: string;
   warmup: boolean;
   repeatExercisesCount?: number;
+}
+
+export interface PopulatedActivity {
+  _id: string;
+  title: string;
+  type: ActivityTypeSchema;
+  date: Date;
+  exercises: {
+    exercise: ExerciseSchema;
+    sets: Set[];
+    withBreaks: boolean;
+  };
+  notes?: string;
 }

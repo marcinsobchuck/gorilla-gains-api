@@ -10,7 +10,7 @@ interface ActivitiesPerUserIdParams {
 export type ActivitiesPerUserIdRequest = Request<ActivitiesPerUserIdParams>;
 
 interface GetUserActivitiesQuery {
-  type: Types.ObjectId;
+  type: string;
 }
 
 export type GetUserActivitiesRequest = Request<object, any, any, GetUserActivitiesQuery>;

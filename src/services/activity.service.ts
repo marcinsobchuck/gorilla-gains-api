@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 
 import { Activity } from '../models/activity';
-import { ActivityDto, ActivitySchema } from '../models/types/activity.types';
+import { ActivityDto, ActivitySchema, PopulatedActivity } from '../models/types/activity.types';
 import { User } from '../models/user';
 
 export class ActivityService {
@@ -20,12 +20,16 @@ export class ActivityService {
     return activities;
   }
 
-  async getUserActivities(user: Express.User, type?: Types.ObjectId) {
-    const userActivities = (await user.populate<{ activities: ActivitySchema[] }>('activities'))
-      .activities;
+  async getUserActivities(user: Express.User, type?: string) {
+    const userActivities = (
+      await user.populate({
+        path: 'activities',
+        populate: [{ path: 'type' }, { path: 'exercises.exercise' }]
+      })
+    ).activities as unknown as PopulatedActivity[];
 
     if (type) {
-      return userActivities.filter((activity) => activity.type === type);
+      return userActivities.filter((activity) => String(activity.type._id) === type);
     }
 
     return userActivities;
