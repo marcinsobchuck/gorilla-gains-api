@@ -25,42 +25,49 @@ const validateSetKeys = (setKeys: string[], keys: string[], activityType: string
   }
 };
 
-export const activitySchema = new mongoose.Schema({
-  title: String,
-  type: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: 'ActivityType'
+export const activitySchema = new mongoose.Schema(
+  {
+    title: String,
+    type: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'ActivityType'
+    },
+    date: Date,
+    exercises: [
+      {
+        exercise: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Exercise'
+        },
+        sets: [
+          {
+            reps: Number,
+            load: Number,
+            break: Number,
+            duration: {
+              hours: Number,
+              minutes: Number,
+              seconds: Number
+            },
+            distance: Number,
+            _id: false
+          }
+        ],
+        withBreaks: Boolean,
+        _id: false
+      }
+    ],
+    notes: String,
+    warmup: Boolean,
+    repeatExercisesCount: Number,
+    exertionRating: Number,
+    isPreset: Boolean
   },
-  date: Date,
-  exercises: [
-    {
-      exercise: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Exercise'
-      },
-      sets: [
-        {
-          reps: Number,
-          load: Number,
-          break: Number,
-          duration: {
-            hours: Number,
-            minutes: Number,
-            seconds: Number
-          },
-          distance: Number,
-          _id: false
-        }
-      ],
-      withBreaks: Boolean,
-      _id: false
-    }
-  ],
-  notes: String,
-  warmup: Boolean,
-  repeatExercisesCount: Number
-});
+  {
+    timestamps: true
+  }
+);
 
 export const Activity = mongoose.model<ActivitySchema>('Activity', activitySchema);
 
@@ -166,7 +173,9 @@ export const validateActivity = async (activityDto: ActivityDto) => {
     exercises: Joi.array().items(exerciseSchema),
     notes: Joi.string().allow(''),
     warmup: Joi.boolean(),
-    repeatExercisesCount: Joi.number()
+    repeatExercisesCount: Joi.number(),
+    exertionRating: Joi.number(),
+    isPreset: Joi.boolean()
   });
 
   return activitySchema.validateAsync(activityDto);

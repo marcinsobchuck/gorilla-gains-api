@@ -1,5 +1,6 @@
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 
+import { GetUserActivitiesQueryOptions } from '../controllers/types/activity.types';
 import { Activity } from '../models/activity';
 import { ActivityDto, ActivitySchema, PopulatedActivity } from '../models/types/activity.types';
 import { User } from '../models/user';
@@ -8,10 +9,14 @@ export class ActivityService {
   async createActivity(activityDto: ActivityDto, user: Express.User) {
     const activity = new Activity(activityDto);
 
-    await activity.save();
-    user.activities.push(activity._id);
+    const populatedActivity = await activity.populate([
+      { path: 'type' },
+      { path: 'exercises.exercise' }
+    ]);
+    await populatedActivity.save();
+    user.activities.push(populatedActivity._id);
     await user.save();
-    return activity;
+    return populatedActivity;
   }
 
   async getAllActivites() {
@@ -20,11 +25,29 @@ export class ActivityService {
     return activities;
   }
 
-  async getUserActivities(user: Express.User, type?: string) {
+  async getUserActivities(user: Express.User, queryOptions: GetUserActivitiesQueryOptions) {
+    const { isPreset, type, limit, offset, startDate, endDate } = queryOptions;
+
+    const parsedLimit = limit ? parseInt(limit) : 10;
+    const parsedOffset = offset ? parseInt(offset) : 0;
+    console.log(new Date('20/04/2024'));
+
+    const dateFilter: FilterQuery<ActivitySchema> = {};
+
+    if (startDate && endDate) {
+      dateFilter.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    }
+
     const userActivities = (
-      await user.populate({
+      await user.populate<ActivitySchema>({
         path: 'activities',
-        populate: [{ path: 'type' }, { path: 'exercises.exercise' }]
+        match: { ...dateFilter, ...(isPreset ? { isPreset: true } : {}) },
+        populate: [{ path: 'type' }, { path: 'exercises.exercise' }],
+        options: {
+          sort: {
+            createdAt: -1
+          }
+        }
       })
     ).activities as unknown as PopulatedActivity[];
 
@@ -32,7 +55,30 @@ export class ActivityService {
       return userActivities.filter((activity) => String(activity.type._id) === type);
     }
 
-    return userActivities;
+    const finalActivities = userActivities.map((activityDoc) => {
+      const activity = activityDoc.toObject<PopulatedActivity>();
+
+      const estimatedDuration = activity.exercises
+        .map((exercise) =>
+          exercise.sets.reduce(
+            (acc, currSet) =>
+              acc +
+              (currSet.break || 0) +
+              (currSet.duration?.seconds || 0) +
+              (currSet.duration?.minutes || 0) * 60 +
+              (currSet.duration?.hours || 0) * 60 * 60,
+            0
+          )
+        )
+        .reduce((a, b) => a + b, 0);
+
+      return {
+        ...activity,
+        estimatedDuration
+      };
+    });
+
+    return finalActivities.slice(parsedOffset, parsedOffset + parsedLimit);
   }
 
   async getActivitiesPerUserId(userId: Types.ObjectId) {
@@ -53,7 +99,9 @@ export class ActivityService {
       throw new Error('There is no activity with given id that is connected to current user');
     }
 
-    const result = await Activity.findByIdAndUpdate(activityId, activityDto, { new: true });
+    const result = await Activity.findByIdAndUpdate(activityId, activityDto, { new: true })
+      .populate('type')
+      .populate('exercises.exercise');
 
     return result;
   }

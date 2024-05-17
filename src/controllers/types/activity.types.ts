@@ -9,11 +9,16 @@ interface ActivitiesPerUserIdParams {
 
 export type ActivitiesPerUserIdRequest = Request<ActivitiesPerUserIdParams>;
 
-interface GetUserActivitiesQuery {
-  type: string;
+export interface GetUserActivitiesQueryOptions {
+  type?: string;
+  isPreset?: boolean;
+  limit?: string;
+  offset?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
-export type GetUserActivitiesRequest = Request<object, any, any, GetUserActivitiesQuery>;
+export type GetUserActivitiesRequest = Request<object, any, any, GetUserActivitiesQueryOptions>;
 
 export type CreateActivityRequest = Request<object, any, ActivityDto>;
 

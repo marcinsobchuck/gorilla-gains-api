@@ -1,12 +1,15 @@
-import { InferSchemaType, Types } from 'mongoose';
+import { Document, InferSchemaType, Types } from 'mongoose';
 
 import { ActivityTypeSchema } from './activityType.types';
 import { ExerciseSchema } from './exercise.types';
 import { activitySchema } from '../activity';
 
 interface Set {
-  reps: number;
-  load: number;
+  reps?: number;
+  load?: number;
+  duration?: Duration;
+  distance?: number;
+  break?: number;
 }
 
 interface Exercise {
@@ -31,9 +34,11 @@ export interface ActivityDto {
   notes?: string;
   warmup: boolean;
   repeatExercisesCount?: number;
+  exertionRating: number;
+  isPreset: boolean;
 }
 
-export interface PopulatedActivity {
+export interface PopulatedActivity extends Document {
   _id: string;
   title: string;
   type: ActivityTypeSchema;
@@ -42,6 +47,8 @@ export interface PopulatedActivity {
     exercise: ExerciseSchema;
     sets: Set[];
     withBreaks: boolean;
-  };
+  }[];
   notes?: string;
+  exertionRating: number;
+  isPreset: boolean;
 }
