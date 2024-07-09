@@ -8,8 +8,12 @@ const activityTypesService = new ActivityTypesService();
 
 export class ActivityTypesController {
   async getAllActivityTypes(req: GetActivityTypesRequest, res: Response) {
-    const activityTypes = await activityTypesService.getAll(req.query.filterText);
-    res.send(activityTypes);
+    try {
+      const activityTypes = await activityTypesService.getAll(req.query.filterText);
+      res.send(activityTypes);
+    } catch (err: any) {
+      res.status(400).send(err.message);
+    }
   }
 
   async createActivityType(req: CreateActivityTypeRequest, res: Response) {

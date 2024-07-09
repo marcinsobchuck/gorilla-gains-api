@@ -48,6 +48,8 @@ export interface PopulatedActivity extends Document {
     sets: Set[];
     withBreaks: boolean;
   }[];
+  repeatExercisesCount?: number;
+  warmup: boolean;
   notes?: string;
   exertionRating: number;
   isPreset: boolean;

@@ -37,9 +37,13 @@ export class ActivityController {
   }
 
   async getUserActivities(req: GetUserActivitiesRequest, res: Response) {
-    if (req.user) {
-      const userActivities = await activityService.getUserActivities(req.user, req.query);
-      res.send(userActivities);
+    try {
+      if (req.user) {
+        const userActivities = await activityService.getUserActivities(req.user, req.query);
+        res.send(userActivities);
+      }
+    } catch (error: any) {
+      res.status(400).send(error.message);
     }
   }
 

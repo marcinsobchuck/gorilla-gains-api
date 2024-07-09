@@ -28,32 +28,35 @@ export class ActivityService {
   async getUserActivities(user: Express.User, queryOptions: GetUserActivitiesQueryOptions) {
     const { isPreset, type, limit, offset, startDate, endDate } = queryOptions;
 
-    const parsedLimit = limit ? parseInt(limit) : 10;
+    const parsedLimit = limit ? parseInt(limit) : Infinity;
     const parsedOffset = offset ? parseInt(offset) : 0;
-    console.log(new Date('20/04/2024'));
 
-    const dateFilter: FilterQuery<ActivitySchema> = {};
+    const filterQuery: FilterQuery<ActivitySchema> = {};
 
     if (startDate && endDate) {
-      dateFilter.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+      filterQuery.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    }
+
+    if (type) {
+      filterQuery.type = type;
+    }
+
+    if (isPreset) {
+      filterQuery.isPreset = isPreset;
     }
 
     const userActivities = (
       await user.populate<ActivitySchema>({
         path: 'activities',
-        match: { ...dateFilter, ...(isPreset ? { isPreset: true } : {}) },
+        match: filterQuery,
         populate: [{ path: 'type' }, { path: 'exercises.exercise' }],
         options: {
           sort: {
-            createdAt: -1
+            date: -1
           }
         }
       })
     ).activities as unknown as PopulatedActivity[];
-
-    if (type) {
-      return userActivities.filter((activity) => String(activity.type._id) === type);
-    }
 
     const finalActivities = userActivities.map((activityDoc) => {
       const activity = activityDoc.toObject<PopulatedActivity>();
@@ -116,6 +119,6 @@ export class ActivityService {
     const userActivities = user.activities;
     userActivities.splice(activityIndex, 1);
     user.save();
-    return await Activity.findByIdAndDelete(activityId);
+    return await Activity.findByIdAndDelete(activityId).populate('type');
   }
 }
