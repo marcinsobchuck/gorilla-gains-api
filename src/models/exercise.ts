@@ -19,6 +19,10 @@ const exerciseSchema = new mongoose.Schema({
   },
   additionalInfo: {
     type: String
+  },
+  musclesHit: {
+    primary: [String],
+    secondary: [String]
   }
 });
 
@@ -29,7 +33,11 @@ export const validateExercise = (exerciseDto: ExerciseDto) => {
     activityTypeId: Joi.string().required(),
     name: Joi.string().min(3).max(255).required(),
     isStatic: Joi.boolean(),
-    additionalInfo: Joi.string()
+    additionalInfo: Joi.string(),
+    musclesHit: Joi.object({
+      primary: Joi.array().items(Joi.string()),
+      secondary: Joi.array().items(Joi.string())
+    })
   });
 
   return schema.validate(exerciseDto);

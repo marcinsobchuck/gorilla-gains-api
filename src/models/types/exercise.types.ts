@@ -9,4 +9,8 @@ export interface ExerciseDto {
   name: string;
   additionalInfo?: string;
   isStatic?: boolean;
+  musclesHit?: {
+    primary: string[];
+    secondary: string[];
+  };
 }

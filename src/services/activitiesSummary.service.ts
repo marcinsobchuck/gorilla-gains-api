@@ -8,7 +8,6 @@ import {
 } from 'date-fns';
 
 import { ActivityTypesService } from './activityTypes.service';
-import { GetActivitiesSummaryQueryOptions } from '../controllers/types/activitiesSummary.types';
 import { ActivitySchema, PopulatedActivity } from '../models/types/activity.types';
 interface Totals {
   weightLifted: number;
@@ -19,7 +18,7 @@ interface Totals {
 const activityTypesService = new ActivityTypesService();
 
 export class ActivitiesSummaryService {
-  async getActivitiesSummary(user: Express.User, queryOptions: GetActivitiesSummaryQueryOptions) {
+  async getActivitiesSummary(user: Express.User) {
     const userActivities = (
       await user.populate<ActivitySchema>({
         path: 'activities',
@@ -32,14 +31,21 @@ export class ActivitiesSummaryService {
       })
     ).activities as unknown as PopulatedActivity[];
 
+    if (userActivities.length === 0) {
+      throw new Error('No activities found for this user');
+    }
+
     const activitiesCount = userActivities.length;
-    const daysSinceLastActivity = differenceInDays(new Date(), userActivities[0].date);
+    const lastActivity = userActivities.find((activity) => activity.date < new Date());
+    const daysSinceLastActivity = lastActivity
+      ? differenceInDays(new Date(), lastActivity?.date)
+      : '-';
 
     const weeksBetweenTwoDates = differenceInWeeks(
       new Date(),
       userActivities[userActivities.length - 1].date
     );
-    const averageActivitiesPerWeek = activitiesCount / weeksBetweenTwoDates;
+    const averageActivitiesPerWeek = (activitiesCount / weeksBetweenTwoDates).toFixed(2);
 
     const allExercises = userActivities.flatMap((activity) =>
       activity.exercises.map((exercise) => exercise.exercise.name)
@@ -70,21 +76,20 @@ export class ActivitiesSummaryService {
     };
 
     const getActivityTypeDistribution = async () => {
-      const activityTypes = await activityTypesService.getAll();
+      const activityTypes = (await activityTypesService.getAll()).map(
+        (activityType) => activityType.type
+      );
 
-      const activityTypeCounts: { [key: string]: number } = {};
-
-      activityTypes.forEach((activityType) => {
-        activityTypeCounts[activityType.type] = 0;
-      });
-
-      userActivities.forEach((activity) => {
-        if (activity.type.type in activityTypeCounts) {
-          activityTypeCounts[activity.type.type]++;
-        } else {
-          activityTypeCounts[activity.type.type] = 1;
-        }
-      });
+      const activityTypeCounts = userActivities.reduce<{ [key: string]: number }>(
+        (counts, activity) => {
+          const activityType = activity.type.type;
+          if (activityTypes.includes(activityType)) {
+            counts[activityType] = (counts[activityType] || 0) + 1;
+          }
+          return counts;
+        },
+        {}
+      );
 
       return Object.keys(activityTypeCounts).map((type) => ({
         name: type,
@@ -93,6 +98,13 @@ export class ActivitiesSummaryService {
     };
     const activityTypeDistribution = await getActivityTypeDistribution();
     const mostCommonExercise = getMostCommonExercise(allExercises);
+
+    const activitiesStatistics = {
+      activitiesCount,
+      daysSinceLastActivity,
+      averageActivitiesPerWeek,
+      mostCommonExercise
+    };
 
     const totals = userActivities.reduce<Totals>(
       (activityAcc, activity) => {
@@ -158,10 +170,7 @@ export class ActivitiesSummaryService {
 
     return {
       totals,
-      activitiesCount,
-      daysSinceLastActivity,
-      averageActivitiesPerWeek,
-      mostCommonExercise,
+      activitiesStatistics,
       activitiesInYear,
       activityTypeDistribution
     };

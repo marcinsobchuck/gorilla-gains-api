@@ -21,7 +21,13 @@ export class ExercisesService {
   }
 
   async createExercise(exerciseDto: ExerciseDto) {
-    const { name, activityTypeId, isStatic, additionalInfo } = exerciseDto;
+    const {
+      name,
+      activityTypeId,
+      isStatic,
+      additionalInfo,
+      musclesHit: { primary, secondary } = {}
+    } = exerciseDto;
 
     const activityType = await ActivityType.findById(activityTypeId);
 
@@ -39,7 +45,11 @@ export class ExercisesService {
       activityType: activityTypeId,
       name,
       additionalInfo,
-      isStatic
+      isStatic,
+      musclesHit: {
+        primary,
+        secondary
+      }
     });
 
     await exercise.save();

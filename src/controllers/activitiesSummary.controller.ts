@@ -1,18 +1,14 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
-import { GetActivitiesSummaryRequest } from './types/activitiesSummary.types';
 import { ActivitiesSummaryService } from '../services/activitiesSummary.service';
 
 const activitiesSummaryService = new ActivitiesSummaryService();
 
 export class ActivitiesSummaryController {
-  async getSummary(req: GetActivitiesSummaryRequest, res: Response) {
+  async getSummary(req: Request, res: Response) {
     try {
       if (req.user) {
-        const activtiesSummary = await activitiesSummaryService.getActivitiesSummary(
-          req.user,
-          req.query
-        );
+        const activtiesSummary = await activitiesSummaryService.getActivitiesSummary(req.user);
         res.send(activtiesSummary);
       }
     } catch (error: any) {
