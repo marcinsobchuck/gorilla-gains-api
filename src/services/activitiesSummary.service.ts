@@ -45,7 +45,10 @@ export class ActivitiesSummaryService {
       new Date(),
       userActivities[userActivities.length - 1].date
     );
-    const averageActivitiesPerWeek = (activitiesCount / weeksBetweenTwoDates).toFixed(2);
+
+    const averageActivitiesPerWeek = weeksBetweenTwoDates
+      ? (activitiesCount / weeksBetweenTwoDates).toFixed(2)
+      : userActivities.length;
 
     const allExercises = userActivities.flatMap((activity) =>
       activity.exercises.map((exercise) => exercise.exercise.name)

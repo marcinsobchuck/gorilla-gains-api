@@ -1,3 +1,4 @@
+import { endOfDay, startOfDay } from 'date-fns';
 import { FilterQuery, Types } from 'mongoose';
 
 import { GetUserActivitiesQueryOptions } from '../controllers/types/activity.types';
@@ -34,7 +35,7 @@ export class ActivityService {
     const filterQuery: FilterQuery<ActivitySchema> = {};
 
     if (startDate && endDate) {
-      filterQuery.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+      filterQuery.date = { $gte: startOfDay(startDate), $lte: endOfDay(endDate) };
     }
 
     if (type) {

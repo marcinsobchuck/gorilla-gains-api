@@ -14,8 +14,8 @@ export interface GetUserActivitiesQueryOptions {
   isPreset?: boolean;
   limit?: string;
   offset?: string;
-  startDate?: string;
-  endDate?: string;
+  startDate?: Date;
+  endDate?: Date;
 }
 
 export type GetUserActivitiesRequest = Request<object, any, any, GetUserActivitiesQueryOptions>;
