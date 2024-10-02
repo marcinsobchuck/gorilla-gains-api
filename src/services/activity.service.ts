@@ -27,12 +27,16 @@ export class ActivityService {
   }
 
   async getUserActivities(user: Express.User, queryOptions: GetUserActivitiesQueryOptions) {
-    const { isPreset, type, limit, offset, startDate, endDate } = queryOptions;
+    const { isPreset, type, limit, offset, startDate, endDate, pastOnly } = queryOptions;
 
     const parsedLimit = limit ? parseInt(limit) : Infinity;
     const parsedOffset = offset ? parseInt(offset) : 0;
 
     const filterQuery: FilterQuery<ActivitySchema> = {};
+
+    if (pastOnly) {
+      filterQuery.date = { $lte: new Date() };
+    }
 
     if (startDate && endDate) {
       filterQuery.date = { $gte: startOfDay(startDate), $lte: endOfDay(endDate) };
@@ -53,7 +57,8 @@ export class ActivityService {
         populate: [{ path: 'type' }, { path: 'exercises.exercise' }],
         options: {
           sort: {
-            date: -1
+            date: -1,
+            createdAt: -1
           }
         }
       })

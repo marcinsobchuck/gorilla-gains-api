@@ -32,7 +32,7 @@ export class ActivitiesSummaryService {
     ).activities as unknown as PopulatedActivity[];
 
     if (userActivities.length === 0) {
-      throw new Error('No activities found for this user');
+      return [];
     }
 
     const activitiesCount = userActivities.length;
