@@ -8,12 +8,15 @@ import { User } from '../models/user';
 
 export class ActivityService {
   async createActivity(activityDto: ActivityDto, user: Express.User) {
-    const activity = new Activity(activityDto);
+    const isNewActivityInThePast = startOfDay(new Date(activityDto.date)) <= startOfDay(new Date());
+    const newActivity = { ...activityDto, isDone: isNewActivityInThePast ? true : false };
+    const activity = new Activity(newActivity);
 
     const populatedActivity = await activity.populate([
       { path: 'type' },
       { path: 'exercises.exercise' }
     ]);
+
     await populatedActivity.save();
     user.activities.push(populatedActivity._id);
     await user.save();

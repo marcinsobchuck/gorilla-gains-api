@@ -62,7 +62,8 @@ export const activitySchema = new mongoose.Schema(
     warmup: Boolean,
     repeatExercisesCount: Number,
     exertionRating: Number,
-    isPreset: Boolean
+    isPreset: Boolean,
+    isDone: Boolean
   },
   {
     timestamps: true
@@ -175,7 +176,8 @@ export const validateActivity = async (activityDto: ActivityDto) => {
     warmup: Joi.boolean(),
     repeatExercisesCount: Joi.number(),
     exertionRating: Joi.number(),
-    isPreset: Joi.boolean()
+    isPreset: Joi.boolean(),
+    isDone: Joi.boolean()
   });
 
   return activitySchema.validateAsync(activityDto);
