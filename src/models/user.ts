@@ -35,10 +35,8 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
     minlength: 5,
     maxlength: 1024
   },
-  age: {
-    type: Number,
-    min: 1,
-    max: 200
+  dob: {
+    type: Date
   },
   gender: {
     type: String
@@ -83,7 +81,7 @@ export const validateEditUserInfo = (editUserInfoDto: EditUserDto) => {
   const schema = Joi.object({
     name: Joi.string().min(5).max(50),
     surname: Joi.string().optional().allow(''),
-    age: Joi.number().min(1).max(200),
+    dob: Joi.date(),
     gender: Joi.string().valid('male', 'female'),
     height: Joi.number().min(1).max(300),
     weight: Joi.number().min(1).max(300),

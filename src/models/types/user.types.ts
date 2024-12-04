@@ -12,7 +12,7 @@ export interface UserSchema {
   surname: string;
   email: string;
   password: string;
-  age: number;
+  dob: Date;
   gender: string;
   weight: number;
   activityLevel: string;
@@ -33,7 +33,7 @@ export type UserModel = Model<UserSchema, object, UserMethods>;
 export interface EditUserDto {
   name?: string;
   surname?: string;
-  age?: number;
+  dob?: Date;
   gender?: string;
   height?: string;
   weight?: number;

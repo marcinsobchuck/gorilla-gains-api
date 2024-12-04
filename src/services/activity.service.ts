@@ -39,6 +39,7 @@ export class ActivityService {
 
     if (pastOnly) {
       filterQuery.date = { $lte: new Date() };
+      filterQuery.isDone = true;
     }
 
     if (startDate && endDate) {
