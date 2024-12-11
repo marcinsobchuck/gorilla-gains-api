@@ -80,6 +80,8 @@ export const User = mongoose.model<UserSchema, UserModel>('User', userSchema);
 export const validateEditUserInfo = (editUserInfoDto: EditUserDto) => {
   const schema = Joi.object({
     name: Joi.string().min(5).max(50),
+    email: Joi.string().min(5).max(255).email(),
+    password: Joi.string().min(5).max(255),
     surname: Joi.string().optional().allow(''),
     dob: Joi.date(),
     gender: Joi.string().valid('male', 'female'),

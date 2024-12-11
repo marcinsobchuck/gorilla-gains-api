@@ -25,3 +25,8 @@ usersRouter.patch(
   passport.authenticate('jwt', { session: false }),
   usersController.editUserInfo
 );
+usersRouter.get(
+  '/verifyPassword',
+  passport.authenticate('jwt', { session: false }),
+  usersController.verifyUserPassword
+);

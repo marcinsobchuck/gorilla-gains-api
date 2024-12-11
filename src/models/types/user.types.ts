@@ -32,6 +32,8 @@ export type UserModel = Model<UserSchema, object, UserMethods>;
 
 export interface EditUserDto {
   name?: string;
+  email?: string;
+  password?: string;
   surname?: string;
   dob?: Date;
   gender?: string;

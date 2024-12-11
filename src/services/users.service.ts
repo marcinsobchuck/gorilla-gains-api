@@ -64,4 +64,10 @@ export class UsersService {
     }).select({ password: 0 });
     return newUser;
   }
+
+  async verifyUserPassword(user: Express.User, password: string) {
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    return isPasswordValid ? isPasswordValid : false;
+  }
 }
