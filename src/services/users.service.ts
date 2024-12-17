@@ -59,6 +59,12 @@ export class UsersService {
   }
 
   async editUserInfo(user: Express.User, editUserInfoDto: EditUserDto) {
+    if (editUserInfoDto.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(editUserInfoDto.password, salt);
+      editUserInfoDto.password = hashedPassword;
+    }
+
     const newUser = await User.findOneAndUpdate({ _id: user.id }, editUserInfoDto, {
       new: true
     }).select({ password: 0 });
