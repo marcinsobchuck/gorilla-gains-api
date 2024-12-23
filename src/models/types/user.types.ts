@@ -12,6 +12,7 @@ export interface UserSchema {
   surname: string;
   email: string;
   password: string;
+  passwordChangedAt: Date;
   dob: Date;
   gender: string;
   weight: number;
@@ -25,7 +26,7 @@ export interface UserSchema {
 }
 
 export interface UserMethods {
-  generateAuthToken(): string;
+  generateAuthToken(expiresIn?: number): string;
 }
 
 export type UserModel = Model<UserSchema, object, UserMethods>;

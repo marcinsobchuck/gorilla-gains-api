@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 
+import { HTMLTemplate } from './templates/forgotPassword';
+import { transporter } from '..';
 import { CreateUserDto, EditUserDto, UserCredentials } from '../models/types/user.types';
 import { User } from '../models/user';
 
@@ -75,5 +77,28 @@ export class UsersService {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     return isPasswordValid ? isPasswordValid : false;
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.findByEmail(email);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const resetToken = user.generateAuthToken(15);
+
+    try {
+      await transporter.sendMail({
+        from: 'gorillagainsclub@gmail.com',
+        to: email,
+        subject: 'Gorilla gains test',
+        html: HTMLTemplate(resetToken)
+      });
+
+      return `E-mail with the verification link was sent to ${email}.`;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
   }
 }

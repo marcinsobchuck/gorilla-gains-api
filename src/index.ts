@@ -2,6 +2,7 @@ import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
 import mongoose from 'mongoose';
+import nodemailer from 'nodemailer';
 
 import { activitiesSummaryRouter } from './routes/activitiesSummary.route';
 import { activityRouter } from './routes/activity.route';
@@ -11,6 +12,14 @@ import { exercisesRouter } from './routes/exercises.route';
 import { usersRouter } from './routes/users.route';
 
 const app = express();
+
+export const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASSWORD
+  }
+});
 
 mongoose
   .connect(process.env.MONGO_DB as string)

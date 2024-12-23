@@ -8,3 +8,4 @@ export const authRouter = express.Router();
 
 authRouter.post('/login', authController.login);
 authRouter.post('/register', authController.register);
+authRouter.post('/forgotPassword', authController.forgotPassword);

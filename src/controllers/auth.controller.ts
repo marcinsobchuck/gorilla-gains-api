@@ -1,7 +1,11 @@
 import { Response } from 'express';
 
-import { CreateUserRequest, LoginRequest } from './types/auth.controller.types';
-import { validateCreateUser, validateCredentials } from '../models/user';
+import {
+  CreateUserRequest,
+  ForgotPasswordRequest,
+  LoginRequest
+} from './types/auth.controller.types';
+import { validateCreateUser, validateCredentials, validateForgotPassword } from '../models/user';
 import { UsersService } from '../services/users.service';
 
 const usersService = new UsersService();
@@ -30,6 +34,20 @@ export class AuthController {
       res.send(token);
     } catch (error: any) {
       res.status(409).send(error.message);
+    }
+  }
+
+  async forgotPassword(req: ForgotPasswordRequest, res: Response) {
+    const { error } = validateForgotPassword(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
+
+    try {
+      const response = await usersService.forgotPassword(req.body.email);
+
+      res.send(response);
+    } catch (error: any) {
+      res.send(error.message);
     }
   }
 }

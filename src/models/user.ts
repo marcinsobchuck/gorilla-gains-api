@@ -35,6 +35,9 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
     minlength: 5,
     maxlength: 1024
   },
+  passwordChangedAt: {
+    type: Date
+  },
   dob: {
     type: Date
   },
@@ -67,10 +70,11 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
   isAdmin: Boolean
 });
 
-userSchema.methods.generateAuthToken = function () {
+userSchema.methods.generateAuthToken = function (expiresIn: number) {
   const token = jwt.sign(
     { _id: this.id, isAdmin: this.isAdmin, email: this.email, name: this.name },
-    process.env.JWT_SECRET as string
+    process.env.JWT_SECRET as string,
+    { expiresIn: `${expiresIn}m` }
   );
   return token;
 };
@@ -112,4 +116,11 @@ export const validateCredentials = (credentials: UserCredentials) => {
     password: Joi.string().min(5).max(255).required()
   });
   return schema.validate(credentials);
+};
+
+export const validateForgotPassword = ({ email }: { email: string }) => {
+  const schema = Joi.object({
+    email: Joi.string().min(5).max(255).required().email()
+  });
+  return schema.validate({ email });
 };
