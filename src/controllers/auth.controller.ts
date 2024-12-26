@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import {
   CreateUserRequest,
@@ -49,5 +49,9 @@ export class AuthController {
     } catch (error: any) {
       res.send(error.message);
     }
+  }
+
+  async verifyPasswordResetToken(req: Request, res: Response) {
+    res.send(!!req.user);
   }
 }

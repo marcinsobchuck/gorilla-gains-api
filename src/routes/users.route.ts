@@ -4,6 +4,7 @@ import passport from 'passport';
 import '../middleware/auth';
 
 import { UsersController } from '../controllers/users.controller';
+import { ApiEndpoints } from '../enum/apiEndpoints.enum';
 import { admin } from '../middleware/admin';
 
 const usersController = new UsersController();
@@ -26,7 +27,7 @@ usersRouter.patch(
   usersController.editUserInfo
 );
 usersRouter.get(
-  '/verifyPassword',
+  ApiEndpoints.USERS_VERIFY_PASSWORD,
   passport.authenticate('jwt', { session: false }),
   usersController.verifyUserPassword
 );

@@ -74,7 +74,9 @@ userSchema.methods.generateAuthToken = function (expiresIn: number) {
   const token = jwt.sign(
     { _id: this.id, isAdmin: this.isAdmin, email: this.email, name: this.name },
     process.env.JWT_SECRET as string,
-    { expiresIn: `${expiresIn}m` }
+    {
+      ...(expiresIn && { expiresIn: `${expiresIn}m` })
+    }
   );
   return token;
 };

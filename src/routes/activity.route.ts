@@ -4,6 +4,7 @@ import passport from 'passport';
 import '../middleware/auth';
 
 import { ActivityController } from '../controllers/activity.controller';
+import { ApiEndpoints } from '../enum/apiEndpoints.enum';
 import { admin } from '../middleware/admin';
 
 const activityController = new ActivityController();
@@ -16,12 +17,12 @@ activityRouter.get(
   activityController.getAllActivities
 );
 activityRouter.get(
-  '/user',
+  ApiEndpoints.ACTIVITY_USER,
   [passport.authenticate('jwt', { session: false })],
   activityController.getUserActivities
 );
 activityRouter.get(
-  '/user/:userId',
+  ApiEndpoints.ACTIVITY_USER_ID,
   [passport.authenticate('jwt', { session: false })],
   activityController.getActivitiesPerUserId
 );
@@ -31,12 +32,12 @@ activityRouter.post(
   activityController.createActivity
 );
 activityRouter.patch(
-  '/:activityId',
+  ApiEndpoints.ACTIVITY_ACTIVITY_ID,
   passport.authenticate('jwt', { session: false }),
   activityController.editActivityById
 );
 activityRouter.delete(
-  '/:activityId',
+  ApiEndpoints.ACTIVITY_ACTIVITY_ID,
   passport.authenticate('jwt', { session: false }),
   activityController.deleteActivity
 );
