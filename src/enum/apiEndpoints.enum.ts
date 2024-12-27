@@ -17,5 +17,6 @@ export enum ApiEndpoints {
   USERS_SUMMARY_ACTIVITIES_BASE = '/api/users/summary/activities',
 
   USERS_BASE = '/api/users',
-  USERS_VERIFY_PASSWORD = '/verify-password'
+  USERS_VERIFY_PASSWORD = '/verify-password',
+  USERS_CHANGE_PASSWORD = '/change-password'
 }

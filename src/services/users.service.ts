@@ -101,4 +101,16 @@ export class UsersService {
       throw new Error(error.message);
     }
   }
+
+  async changeUserPassword(user: Express.User, password: string) {
+    try {
+      user.passwordChangedAt = new Date();
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      user.password = hashedPassword;
+      await user.save();
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

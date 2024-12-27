@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 
-import { EditUserInfoRequest, VerifyUserPasswordRequest } from './types/users.types';
+import {
+  ChangeUserPasswordRequest,
+  EditUserInfoRequest,
+  VerifyUserPasswordRequest
+} from './types/users.types';
 import { validateEditUserInfo } from '../models/user';
 import { UsersService } from '../services/users.service';
 
@@ -47,6 +51,17 @@ export class UsersController {
       try {
         const isPasswordValid = await usersService.verifyUserPassword(req.user, req.query.password);
         res.send(isPasswordValid);
+      } catch (error: any) {
+        res.status(400).send(error.message);
+      }
+    }
+  }
+
+  async changeUserPassword(req: ChangeUserPasswordRequest, res: Response) {
+    if (req.user) {
+      try {
+        await usersService.changeUserPassword(req.user, req.body.password);
+        res.send('Password succesfully changed');
       } catch (error: any) {
         res.status(400).send(error.message);
       }

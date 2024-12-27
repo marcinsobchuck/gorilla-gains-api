@@ -13,31 +13,31 @@ export const activityRouter = express.Router();
 
 activityRouter.get(
   '/',
-  [passport.authenticate('jwt', { session: false }), admin],
+  [passport.authenticate('auth', { session: false }), admin],
   activityController.getAllActivities
 );
 activityRouter.get(
   ApiEndpoints.ACTIVITY_USER,
-  [passport.authenticate('jwt', { session: false })],
+  [passport.authenticate('auth', { session: false })],
   activityController.getUserActivities
 );
 activityRouter.get(
   ApiEndpoints.ACTIVITY_USER_ID,
-  [passport.authenticate('jwt', { session: false })],
+  [passport.authenticate('auth', { session: false })],
   activityController.getActivitiesPerUserId
 );
 activityRouter.post(
   '/',
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate('auth', { session: false }),
   activityController.createActivity
 );
 activityRouter.patch(
   ApiEndpoints.ACTIVITY_ACTIVITY_ID,
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate('auth', { session: false }),
   activityController.editActivityById
 );
 activityRouter.delete(
   ApiEndpoints.ACTIVITY_ACTIVITY_ID,
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate('auth', { session: false }),
   activityController.deleteActivity
 );

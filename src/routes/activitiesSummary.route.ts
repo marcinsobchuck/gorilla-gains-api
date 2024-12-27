@@ -10,6 +10,6 @@ export const activitiesSummaryRouter = express.Router();
 
 activitiesSummaryRouter.get(
   '/',
-  [passport.authenticate('jwt', { session: false })],
+  [passport.authenticate('auth', { session: false })],
   activitiesSummaryController.getSummary
 );

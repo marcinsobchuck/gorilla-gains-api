@@ -12,11 +12,11 @@ export const exercisesRouter = express.Router();
 
 exercisesRouter.get(
   '/',
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate('auth', { session: false }),
   exercisesController.getExercisesPerActivityType
 );
 exercisesRouter.post(
   '/',
-  [passport.authenticate('jwt', { session: false }), admin],
+  [passport.authenticate('auth', { session: false }), admin],
   exercisesController.createExercise
 );

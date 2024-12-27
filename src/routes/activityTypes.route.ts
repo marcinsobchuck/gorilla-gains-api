@@ -13,6 +13,6 @@ export const activityTypesRouter = express.Router();
 activityTypesRouter.get('/', activityTypesController.getAllActivityTypes);
 activityTypesRouter.post(
   '/',
-  [passport.authenticate('jwt', { session: false }), admin],
+  [passport.authenticate('auth', { session: false }), admin],
   activityTypesController.createActivityType
 );
