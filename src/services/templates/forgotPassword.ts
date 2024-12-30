@@ -13,7 +13,7 @@ const getHTMLTemplate = (token: string) =>
         <mj-image align="center" width="160px" src="https://drive.usercontent.google.com/download?id=1fjheUD-5Ye4NiM4eT-p5IO_yJPfqPyN7" />
         <mj-divider border-width="1px" border-style="solid" border-color="#FFFFFF40" />
         <mj-spacer height="30px" />
-        <mj-button href="http://localhost:5173/entry/forgot-password?token=${token}" border-radius="54px" font-family="Montserrat, Roboto, Arial" font-weight="600" inner-padding="16px 24px" font-size="16px" color="#121212" background-color="#A1D890">
+        <mj-button href="http://localhost:5173/entry/change-password?token=${token}" border-radius="54px" font-family="Montserrat, Roboto, Arial" font-weight="600" inner-padding="16px 24px" font-size="16px" color="#121212" background-color="#A1D890">
           Reset password
         </mj-button>
         <mj-spacer height="30px" />
