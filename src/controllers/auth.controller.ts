@@ -47,7 +47,7 @@ export class AuthController {
 
       res.send(response);
     } catch (error: any) {
-      res.send(error.message);
+      res.status(401).send(error.message);
     }
   }
 

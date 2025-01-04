@@ -8,7 +8,7 @@ export enum ApiEndpoints {
   ACTIVITY_BASE = '/api/activity',
   ACTIVITY_USER = '/user',
   ACTIVITY_USER_ID = '/user/:userId',
-  ACTIVITY_ACTIVITY_ID = 'user/:activityId',
+  ACTIVITY_ACTIVITY_ID = '/user/:activityId',
 
   ACTIVITY_TYPES_BASE = '/api/activity-types',
 

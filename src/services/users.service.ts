@@ -92,7 +92,7 @@ export class UsersService {
       await transporter.sendMail({
         from: 'gorillagainsclub@gmail.com',
         to: email,
-        subject: 'Gorilla gains test',
+        subject: 'Gorilla gains - password reset requested',
         html: HTMLTemplate(resetToken)
       });
 
