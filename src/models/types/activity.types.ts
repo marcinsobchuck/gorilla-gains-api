@@ -10,6 +10,7 @@ interface Set {
   duration?: Duration;
   distance?: number;
   break?: number;
+  repeatCount?: number;
 }
 
 interface Exercise {

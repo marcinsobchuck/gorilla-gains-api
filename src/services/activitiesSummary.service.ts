@@ -116,9 +116,11 @@ export class ActivitiesSummaryService {
             const exerciseTotals = exercise.sets.reduce<Totals>(
               (setAcc, currSet) => {
                 return {
-                  weightLifted: setAcc.weightLifted + (currSet.load || 0) * (currSet.reps || 1),
-                  reps: setAcc.reps + (currSet.reps || 0),
-                  distance: setAcc.distance + (currSet.distance || 0)
+                  weightLifted:
+                    setAcc.weightLifted +
+                    (currSet.load || 0) * (currSet.reps || 1) * (currSet.repeatCount || 1),
+                  reps: setAcc.reps + (currSet.reps || 0) * (currSet.repeatCount || 1),
+                  distance: setAcc.distance + (currSet.distance || 0) * (currSet.repeatCount || 1)
                 };
               },
               { weightLifted: 0, reps: 0, distance: 0 }

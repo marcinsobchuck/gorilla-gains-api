@@ -10,7 +10,7 @@ const activityTypesService = new ActivityTypesService();
 const exercisesService = new ExercisesService();
 
 const validateSetKeys = (setKeys: string[], keys: string[], activityType: string) => {
-  const commonKeys = ['break'];
+  const commonKeys = ['break', 'repeatCount'];
 
   const allowedKeys = [...commonKeys, ...keys];
 
@@ -44,13 +44,14 @@ export const activitySchema = new mongoose.Schema(
           {
             reps: Number,
             load: Number,
-            break: Number,
             duration: {
               hours: Number,
               minutes: Number,
               seconds: Number
             },
             distance: Number,
+            break: Number,
+            repeatCount: Number,
             _id: false
           }
         ],
@@ -103,7 +104,8 @@ const checkValidActivityType = async (data: string) => {
 };
 
 const commonSetSchema = Joi.object({
-  break: Joi.number().allow(null)
+  break: Joi.number().allow(null),
+  repeatCount: Joi.number()
 });
 
 const strengthStaticSet = commonSetSchema.keys({
