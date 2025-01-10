@@ -31,6 +31,10 @@ export class ActivitiesSummaryService {
       })
     ).activities as unknown as PopulatedActivity[];
 
+    const activityTypes = (await activityTypesService.getAll()).map(
+      (activityType) => activityType.type
+    );
+
     if (userActivities.length === 0) {
       return [];
     }
@@ -79,11 +83,10 @@ export class ActivitiesSummaryService {
     };
 
     const getActivityTypeDistribution = async () => {
-      const activityTypes = (await activityTypesService.getAll()).map(
-        (activityType) => activityType.type
+      const activitiesDone = userActivities.filter(
+        (activity) => activity.date <= new Date() && activity.isDone
       );
-
-      const activityTypeCounts = userActivities.reduce<{ [key: string]: number }>(
+      const activityTypeCounts = activitiesDone.reduce<{ [key: string]: number }>(
         (counts, activity) => {
           const activityType = activity.type.type;
           if (activityTypes.includes(activityType)) {
@@ -94,10 +97,15 @@ export class ActivitiesSummaryService {
         {}
       );
 
-      return Object.keys(activityTypeCounts).map((type) => ({
+      const distributionPerActivityType = Object.keys(activityTypeCounts).map((type) => ({
         name: type,
         value: activityTypeCounts[type]
       }));
+
+      return {
+        distributionPerActivityType,
+        totalDone: activitiesDone.length
+      };
     };
     const activityTypeDistribution = await getActivityTypeDistribution();
     const mostCommonExercise = getMostCommonExercise(allExercises);
@@ -160,17 +168,28 @@ export class ActivitiesSummaryService {
 
     const activitiesInYear = last12Months.map((month) => {
       const formatDateToMonth = (date: Date) => format(new Date(date), 'MMM-yyyy');
-      let count = 0;
+
+      const data: Record<string, any> = {
+        value: 0
+      };
 
       activitiesFromLast12Months.forEach((activity) => {
         if (formatDateToMonth(activity.date) === month) {
-          count++;
+          data.fullMonthName = format(activity.date, 'LLLL');
+          data.value++;
+          if (activityTypes.includes(activity.type.type)) {
+            data[activity.type.type] = (data[activity.type.type] || 0) + 1;
+          }
+
+          if (!activity.isDone) {
+            data.unresolved = (data.unresolved || 0) + 1;
+          }
         }
       });
 
       const [monthName] = month.split('-');
 
-      return { name: monthName, value: count };
+      return { ...data, name: monthName };
     });
 
     return {
