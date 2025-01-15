@@ -1,8 +1,8 @@
-export interface ExerciseSchema {
-  activityType: string;
-  name: string;
-  isStatic: string;
-}
+import { InferSchemaType } from 'mongoose';
+
+import { exerciseSchema } from '../exercise';
+
+export type ExerciseSchema = InferSchemaType<typeof exerciseSchema>;
 
 export interface ExerciseDto {
   activityTypeId: string;
@@ -13,4 +13,6 @@ export interface ExerciseDto {
     primary: string[];
     secondary: string[];
   };
+  description?: string;
+  videoURL?: string;
 }

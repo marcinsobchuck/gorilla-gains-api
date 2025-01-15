@@ -13,7 +13,7 @@ export const exercisesRouter = express.Router();
 exercisesRouter.get(
   '/',
   passport.authenticate('auth', { session: false }),
-  exercisesController.getExercisesPerActivityType
+  exercisesController.getExercises
 );
 exercisesRouter.post(
   '/',

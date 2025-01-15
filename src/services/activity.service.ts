@@ -63,7 +63,9 @@ export class ActivityService {
           sort: {
             date: -1,
             createdAt: -1
-          }
+          },
+          skip: parsedOffset,
+          limit: parsedLimit
         }
       })
     ).activities as unknown as PopulatedActivity[];
@@ -91,7 +93,7 @@ export class ActivityService {
       };
     });
 
-    return finalActivities.slice(parsedOffset, parsedOffset + parsedLimit);
+    return finalActivities;
   }
 
   async getActivitiesPerUserId(userId: Types.ObjectId) {

@@ -1,14 +1,18 @@
 import { FilterQuery, Types } from 'mongoose';
 
+import { GetExercisesQueryOptions } from '../controllers/types/exercises.types';
 import { ActivityType } from '../models/activityType';
 import { Exercise } from '../models/exercise';
 import { ExerciseDto, ExerciseSchema } from '../models/types/exercise.types';
 
 export class ExercisesService {
-  async getExercisesPerActivityType(activityTypeId: Types.ObjectId, filterText?: string) {
-    const filters: FilterQuery<ExerciseSchema> = {
-      activityType: activityTypeId
-    };
+  async getExercises(queryOptions: GetExercisesQueryOptions) {
+    const { activityType, filterText } = queryOptions;
+    const filters: FilterQuery<ExerciseSchema> = {};
+
+    if (activityType) {
+      filters.activityType = activityType;
+    }
 
     if (filterText) {
       filters.name = {

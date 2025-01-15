@@ -1,18 +1,15 @@
 import { Response } from 'express';
 
-import { CreateExerciseRequest, ExercisesPerActivityTypeRequest } from './types/exercises.types';
+import { CreateExerciseRequest, GetExercisesRequest } from './types/exercises.types';
 import { validateExercise } from '../models/exercise';
 import { ExercisesService } from '../services/exercises.service';
 
 const exercisesService = new ExercisesService();
 
 export class ExercisesController {
-  async getExercisesPerActivityType(req: ExercisesPerActivityTypeRequest, res: Response) {
+  async getExercises(req: GetExercisesRequest, res: Response) {
     try {
-      const exercises = await exercisesService.getExercisesPerActivityType(
-        req.query.activityTypeId,
-        req.query.filterText
-      );
+      const exercises = await exercisesService.getExercises(req.query);
       res.send(exercises);
     } catch (err: any) {
       res.status(400).send(err.message);

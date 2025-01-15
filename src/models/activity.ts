@@ -83,8 +83,11 @@ const durationSchema = Joi.object({
   }
 });
 
-const checkValidExercise = async (data: string, activityType: Types.ObjectId) => {
-  const res = await exercisesService.getExercisesPerActivityType(activityType);
+const checkValidExercise = async (
+  data: string,
+  activityType: Types.ObjectId | Types.ObjectId[]
+) => {
+  const res = await exercisesService.getExercises({ activityType });
   const exercisesIds = res.map((item) => String(item._id));
   const isMatch = exercisesIds.includes(data);
 

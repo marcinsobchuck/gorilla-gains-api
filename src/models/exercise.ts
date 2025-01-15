@@ -1,9 +1,9 @@
 import Joi from 'joi';
 import mongoose from 'mongoose';
 
-import { ExerciseDto, ExerciseSchema } from './types/exercise.types';
+import { ExerciseDto } from './types/exercise.types';
 
-const exerciseSchema = new mongoose.Schema({
+export const exerciseSchema = new mongoose.Schema({
   activityType: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ActivityType'
@@ -23,10 +23,16 @@ const exerciseSchema = new mongoose.Schema({
   musclesHit: {
     primary: [String],
     secondary: [String]
+  },
+  description: {
+    type: String
+  },
+  videoURL: {
+    type: String
   }
 });
 
-export const Exercise = mongoose.model<ExerciseSchema>('Exercise', exerciseSchema);
+export const Exercise = mongoose.model('Exercise', exerciseSchema);
 
 export const validateExercise = (exerciseDto: ExerciseDto) => {
   const schema = Joi.object({
@@ -37,7 +43,9 @@ export const validateExercise = (exerciseDto: ExerciseDto) => {
     musclesHit: Joi.object({
       primary: Joi.array().items(Joi.string()),
       secondary: Joi.array().items(Joi.string())
-    })
+    }),
+    description: Joi.string(),
+    videoURL: Joi.string().uri()
   });
 
   return schema.validate(exerciseDto);

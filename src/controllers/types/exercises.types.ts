@@ -3,16 +3,11 @@ import { Types } from 'mongoose';
 
 import { ExerciseDto } from '../../models/types/exercise.types';
 
-interface ExercisesPerActivityTypeQuery {
-  activityTypeId: Types.ObjectId;
-  filterText: string;
+export interface GetExercisesQueryOptions {
+  activityType?: Types.ObjectId | Types.ObjectId[];
+  filterText?: string;
 }
 
-export type ExercisesPerActivityTypeRequest = Request<
-  object,
-  any,
-  any,
-  ExercisesPerActivityTypeQuery
->;
+export type GetExercisesRequest = Request<object, any, any, GetExercisesQueryOptions>;
 
 export type CreateExerciseRequest = Request<object, any, ExerciseDto>;
