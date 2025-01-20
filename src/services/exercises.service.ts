@@ -7,7 +7,7 @@ import { ExerciseDto, ExerciseSchema } from '../models/types/exercise.types';
 
 export class ExercisesService {
   async getExercises(queryOptions: GetExercisesQueryOptions) {
-    const { activityType, filterText } = queryOptions;
+    const { activityType, filterText, limit, offset } = queryOptions;
     const filters: FilterQuery<ExerciseSchema> = {};
 
     if (activityType) {
@@ -21,18 +21,17 @@ export class ExercisesService {
       };
     }
 
-    return await Exercise.find(filters).populate('activityType');
+    return await Exercise.find(filters)
+      .populate('activityType')
+      .skip(Number(offset))
+      .limit(Number(limit))
+      .sort({
+        name: 1
+      });
   }
 
   async createExercise(exerciseDto: ExerciseDto) {
-    const {
-      name,
-      activityTypeId,
-      isStatic,
-      additionalInfo,
-      musclesHit: { primary, secondary } = {}
-    } = exerciseDto;
-
+    const { activityTypeId, name } = exerciseDto;
     const activityType = await ActivityType.findById(activityTypeId);
 
     if (!activityType) {
@@ -45,16 +44,7 @@ export class ExercisesService {
       throw new Error('Exercise already exists');
     }
 
-    exercise = new Exercise({
-      activityType: activityTypeId,
-      name,
-      additionalInfo,
-      isStatic,
-      musclesHit: {
-        primary,
-        secondary
-      }
-    });
+    exercise = new Exercise({ ...exerciseDto, activityType: activityTypeId });
 
     await exercise.save();
 

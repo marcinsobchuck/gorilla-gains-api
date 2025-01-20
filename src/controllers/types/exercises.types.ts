@@ -6,6 +6,8 @@ import { ExerciseDto } from '../../models/types/exercise.types';
 export interface GetExercisesQueryOptions {
   activityType?: Types.ObjectId | Types.ObjectId[];
   filterText?: string;
+  offset?: number;
+  limit?: number;
 }
 
 export type GetExercisesRequest = Request<object, any, any, GetExercisesQueryOptions>;
