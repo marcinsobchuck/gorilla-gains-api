@@ -56,4 +56,29 @@ export class ExercisesService {
     const isExerciseStatic = exercise?.isStatic;
     return isExerciseStatic;
   }
+
+  async toggleFavouriteExercise(exerciseId: Types.ObjectId, user: Express.User) {
+    const exercise = await Exercise.findById(exerciseId);
+
+    if (!exercise) {
+      throw new Error(`There is no exercise with an id of ${exerciseId}`);
+    }
+
+    const index = user.favouriteExercises.indexOf(exerciseId);
+
+    if (index === -1) {
+      user.favouriteExercises.push(exerciseId);
+    } else {
+      user.favouriteExercises.splice(index, 1);
+    }
+
+    await user.save();
+
+    return exercise;
+  }
+
+  async getFavouriteExercises(user: Express.User) {
+    const currentUser = await user.populate('favouriteExercises');
+    return currentUser.favouriteExercises;
+  }
 }

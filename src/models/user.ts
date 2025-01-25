@@ -67,6 +67,7 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
   },
   goals: [String],
   activities: [{ type: Schema.Types.ObjectId, ref: 'Activity' }],
+  favouriteExercises: [{ type: Schema.Types.ObjectId, ref: 'Exercise' }],
   isAdmin: Boolean
 });
 

@@ -13,6 +13,8 @@ export enum ApiEndpoints {
   ACTIVITY_TYPES_BASE = '/api/activity-types',
 
   EXERCISES_BASE = '/api/exercises',
+  TOGGLE_FAVOURITE_EXERCISE = '/user/:exerciseId',
+  FAVOURITE_EXERCISES = '/user/favourite-exercises',
 
   USERS_SUMMARY_ACTIVITIES_BASE = '/api/users/summary/activities',
 

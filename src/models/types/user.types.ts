@@ -22,6 +22,7 @@ export interface UserSchema {
   dueDateWeight: Date;
   goals: string[];
   activities: Types.ObjectId[];
+  favouriteExercises: Types.ObjectId[];
   isAdmin: boolean;
 }
 

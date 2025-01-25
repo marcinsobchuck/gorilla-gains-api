@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 import { ExerciseDto } from './types/exercise.types';
 
@@ -49,4 +49,10 @@ export const validateExercise = (exerciseDto: ExerciseDto) => {
   });
 
   return schema.validate(exerciseDto);
+};
+
+export const validateToggleExercise = (exerciseId: Types.ObjectId) => {
+  const schema = Joi.string().required();
+
+  return schema.validate(exerciseId);
 };

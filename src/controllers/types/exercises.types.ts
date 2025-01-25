@@ -13,3 +13,5 @@ export interface GetExercisesQueryOptions {
 export type GetExercisesRequest = Request<object, any, any, GetExercisesQueryOptions>;
 
 export type CreateExerciseRequest = Request<object, any, ExerciseDto>;
+
+export type ToggleFavouriteExerciseRequest = Request<{ exerciseId: Types.ObjectId }, any, any>;
