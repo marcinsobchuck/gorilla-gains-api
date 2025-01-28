@@ -6,7 +6,8 @@ import { ExerciseDto } from './types/exercise.types';
 export const exerciseSchema = new mongoose.Schema({
   activityType: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ActivityType'
+    ref: 'ActivityType',
+    required: true
   },
   name: {
     type: String,

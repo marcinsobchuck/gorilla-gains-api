@@ -11,7 +11,11 @@ export class UsersService {
   }
 
   async getCurrentUser(user: Express.User) {
-    return await User.findById(user.id).select({ activities: 0, password: 0 });
+    return await User.findById(user.id).select({
+      activities: 0,
+      password: 0,
+      favouriteExercises: 0
+    });
   }
 
   private async findByEmail(email: string) {

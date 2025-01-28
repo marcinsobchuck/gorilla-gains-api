@@ -21,13 +21,15 @@ export class ExercisesService {
       };
     }
 
-    return await Exercise.find(filters)
+    const exercises = await Exercise.find(filters)
       .populate('activityType')
       .skip(Number(offset))
       .limit(Number(limit))
       .sort({
         name: 1
       });
+
+    return exercises;
   }
 
   async createExercise(exerciseDto: ExerciseDto) {
@@ -78,7 +80,11 @@ export class ExercisesService {
   }
 
   async getFavouriteExercises(user: Express.User) {
-    const currentUser = await user.populate('favouriteExercises');
+    const currentUser = await user.populate<ExerciseSchema>({
+      path: 'favouriteExercises',
+      populate: [{ path: 'activityType' }],
+      options: { sort: { name: 1 } }
+    });
     return currentUser.favouriteExercises;
   }
 }

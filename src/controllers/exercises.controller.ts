@@ -12,11 +12,13 @@ const exercisesService = new ExercisesService();
 
 export class ExercisesController {
   async getExercises(req: GetExercisesRequest, res: Response) {
-    try {
-      const exercises = await exercisesService.getExercises(req.query);
-      res.send(exercises);
-    } catch (err: any) {
-      res.status(400).send(err.message);
+    if (req.user) {
+      try {
+        const exercises = await exercisesService.getExercises(req.query);
+        res.send(exercises);
+      } catch (err: any) {
+        res.status(400).send(err.message);
+      }
     }
   }
 

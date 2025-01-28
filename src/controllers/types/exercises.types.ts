@@ -4,10 +4,11 @@ import { Types } from 'mongoose';
 import { ExerciseDto } from '../../models/types/exercise.types';
 
 export interface GetExercisesQueryOptions {
-  activityType?: Types.ObjectId | Types.ObjectId[];
+  activityType?: string | string[];
   filterText?: string;
   offset?: number;
   limit?: number;
+  withFavourites?: boolean;
 }
 
 export type GetExercisesRequest = Request<object, any, any, GetExercisesQueryOptions>;

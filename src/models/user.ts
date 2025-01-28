@@ -71,7 +71,7 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
   isAdmin: Boolean
 });
 
-userSchema.methods.generateAuthToken = function (expiresIn: number) {
+userSchema.methods.generateAuthToken = function (expiresIn?: number) {
   const token = jwt.sign(
     { _id: this.id, isAdmin: this.isAdmin, email: this.email, name: this.name },
     process.env.JWT_SECRET as string,

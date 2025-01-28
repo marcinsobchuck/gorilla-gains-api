@@ -29,7 +29,7 @@ export type ActivitySchema = InferSchemaType<typeof activitySchema>;
 
 export interface ActivityDto {
   title: string;
-  type: Types.ObjectId;
+  type: string;
   exercises: Exercise[];
   date: Date;
   notes?: string;
