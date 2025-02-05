@@ -31,30 +31,29 @@ export class ActivitiesSummaryService {
       })
     ).activities as unknown as PopulatedActivity[];
 
-    const activityTypes = (await activityTypesService.getAll()).map(
-      (activityType) => activityType.type
-    );
-
     if (userActivities.length === 0) {
       return [];
     }
 
-    const activitiesCount = userActivities.length;
-    const lastActivity = userActivities.find((activity) => activity.date < new Date());
+    const activityTypes = (await activityTypesService.getAll()).map(
+      (activityType) => activityType.type
+    );
+    const onlyDoneActivities = userActivities.filter((activity) => activity.isDone);
+    const activitiesCount = onlyDoneActivities.length;
+    const lastActivity = onlyDoneActivities.find((activity) => activity.date < new Date());
     const daysSinceLastActivity = lastActivity
       ? differenceInDays(new Date(), lastActivity?.date)
       : '-';
 
-    const weeksBetweenTwoDates = differenceInWeeks(
-      new Date(),
-      userActivities[userActivities.length - 1].date
-    );
+    const weeksBetweenTwoDates =
+      activitiesCount > 0 &&
+      differenceInWeeks(new Date(), onlyDoneActivities[activitiesCount - 1].date);
 
     const averageActivitiesPerWeek = weeksBetweenTwoDates
       ? (activitiesCount / weeksBetweenTwoDates).toFixed(2)
-      : userActivities.length;
+      : activitiesCount;
 
-    const allExercises = userActivities.flatMap((activity) =>
+    const allExercises = onlyDoneActivities.flatMap((activity) =>
       activity.exercises.map((exercise) => exercise.exercise.name)
     );
 
@@ -76,6 +75,10 @@ export class ActivitiesSummaryService {
         }
       });
 
+      if (maxCount === 0) {
+        mostCommonExercise = '-';
+      }
+
       return {
         maxCount,
         mostCommonExercise
@@ -83,10 +86,7 @@ export class ActivitiesSummaryService {
     };
 
     const getActivityTypeDistribution = async () => {
-      const activitiesDone = userActivities.filter(
-        (activity) => activity.date <= new Date() && activity.isDone
-      );
-      const activityTypeCounts = activitiesDone.reduce<{ [key: string]: number }>(
+      const activityTypeCounts = onlyDoneActivities.reduce<{ [key: string]: number }>(
         (counts, activity) => {
           const activityType = activity.type.type;
           if (activityTypes.includes(activityType)) {
@@ -104,7 +104,7 @@ export class ActivitiesSummaryService {
 
       return {
         distributionPerActivityType,
-        totalDone: activitiesDone.length
+        totalDone: activitiesCount
       };
     };
     const activityTypeDistribution = await getActivityTypeDistribution();
@@ -117,7 +117,7 @@ export class ActivitiesSummaryService {
       mostCommonExercise
     };
 
-    const totals = userActivities.reduce<Totals>(
+    const totals = onlyDoneActivities.reduce<Totals>(
       (activityAcc, activity) => {
         const activityTotals = activity.exercises.reduce<Totals>(
           (exerciseAcc, exercise) => {
@@ -161,6 +161,7 @@ export class ActivitiesSummaryService {
     const activitiesFromLast12Months = userActivities.filter(
       (activity) => activity.date <= now && activity.date >= yearAgo
     );
+
     const last12Months = eachMonthOfInterval({
       start: yearAgo,
       end: now
@@ -176,7 +177,9 @@ export class ActivitiesSummaryService {
       activitiesFromLast12Months.forEach((activity) => {
         if (formatDateToMonth(activity.date) === month) {
           data.fullMonthName = format(activity.date, 'LLLL');
-          data.value++;
+          if (activity.isDone) {
+            data.value++;
+          }
           if (activityTypes.includes(activity.type.type)) {
             data[activity.type.type] = (data[activity.type.type] || 0) + 1;
           }

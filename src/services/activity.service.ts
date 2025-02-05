@@ -30,7 +30,7 @@ export class ActivityService {
   }
 
   async getUserActivities(user: Express.User, queryOptions: GetUserActivitiesQueryOptions) {
-    const { isPreset, type, limit, offset, startDate, endDate, pastOnly } = queryOptions;
+    const { isPreset, type, limit, offset, startDate, endDate, pastOnly, isDone } = queryOptions;
 
     const parsedLimit = limit ? parseInt(limit) : Infinity;
     const parsedOffset = offset ? parseInt(offset) : 0;
@@ -52,6 +52,10 @@ export class ActivityService {
 
     if (isPreset) {
       filterQuery.isPreset = isPreset;
+    }
+
+    if (isDone) {
+      filterQuery.isDone = isDone;
     }
 
     const userActivities = (

@@ -17,6 +17,7 @@ export interface GetUserActivitiesQueryOptions {
   startDate?: string;
   endDate?: string;
   pastOnly?: boolean;
+  isDone?: boolean;
 }
 
 export type GetUserActivitiesRequest = Request<object, any, any, GetUserActivitiesQueryOptions>;
