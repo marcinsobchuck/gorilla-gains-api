@@ -7,6 +7,8 @@ export enum ApiEndpoints {
 
   ACTIVITY_BASE = '/api/activity',
   ACTIVITY_USER = '/user',
+  ACTIVITY_USER_PRESETS = '/user/presets',
+  ACTIVITY_USER_PRESET_ID = '/user/presets/:presetId',
   ACTIVITY_USER_ID = '/user/:userId',
   ACTIVITY_ACTIVITY_ID = '/user/:activityId',
 

@@ -11,7 +11,6 @@ export type ActivitiesPerUserIdRequest = Request<ActivitiesPerUserIdParams>;
 
 export interface GetUserActivitiesQueryOptions {
   type?: string;
-  isPreset?: boolean;
   limit?: string;
   offset?: string;
   startDate?: string;
@@ -35,3 +34,6 @@ interface DeleteByActivityIdParams {
 }
 
 export type DeleteByActivityIdRequest = Request<DeleteByActivityIdParams>;
+
+export type AddActivityPresetRequest = Request<object, any, { activityId: string }>;
+export type RemoveActivityPresetRequest = Request<{ presetId: string }>;

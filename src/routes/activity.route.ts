@@ -22,6 +22,21 @@ activityRouter.get(
   activityController.getUserActivities
 );
 activityRouter.get(
+  ApiEndpoints.ACTIVITY_USER_PRESETS,
+  [passport.authenticate('auth', { session: false })],
+  activityController.getUserActivityPresets
+);
+activityRouter.post(
+  ApiEndpoints.ACTIVITY_USER_PRESETS,
+  [passport.authenticate('auth', { session: false })],
+  activityController.addActivityPreset
+);
+activityRouter.patch(
+  ApiEndpoints.ACTIVITY_USER_PRESET_ID,
+  [passport.authenticate('auth', { session: false })],
+  activityController.removeActivityPreset
+);
+activityRouter.get(
   ApiEndpoints.ACTIVITY_USER_ID,
   [passport.authenticate('auth', { session: false })],
   activityController.getActivitiesPerUserId

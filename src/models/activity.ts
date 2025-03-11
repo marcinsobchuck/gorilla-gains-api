@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import mongoose, { Types } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { ActivityDto, ActivitySchema } from './types/activity.types';
 import { ActivityTypes } from '../enum/activityTypes.enum';
@@ -63,7 +63,6 @@ export const activitySchema = new mongoose.Schema(
     warmup: Boolean,
     repeatExercisesCount: Number,
     exertionRating: Number,
-    isPreset: Boolean,
     isDone: Boolean
   },
   {
@@ -178,7 +177,6 @@ export const validateActivity = async (activityDto: ActivityDto) => {
     warmup: Joi.boolean(),
     repeatExercisesCount: Joi.number(),
     exertionRating: Joi.number(),
-    isPreset: Joi.boolean(),
     isDone: Joi.boolean()
   });
 

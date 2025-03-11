@@ -67,6 +67,7 @@ const userSchema = new mongoose.Schema<UserSchema, UserModel, UserMethods>({
   },
   goals: [String],
   activities: [{ type: Schema.Types.ObjectId, ref: 'Activity' }],
+  presets: [{ type: Schema.Types.ObjectId, ref: 'Activity' }],
   favouriteExercises: [{ type: Schema.Types.ObjectId, ref: 'Exercise' }],
   isAdmin: Boolean
 });
@@ -96,7 +97,7 @@ export const validateEditUserInfo = (editUserInfoDto: EditUserDto) => {
     weight: Joi.number().min(1).max(300),
     activityLevel: Joi.string(),
     desiredWeight: Joi.number().min(1).max(300),
-    dueDateWeight: Joi.date(),
+    dueDateWeight: Joi.date().allow(null),
     goals: Joi.array().items(Joi.string())
   });
 

@@ -36,7 +36,6 @@ export interface ActivityDto {
   warmup: boolean;
   repeatExercisesCount?: number;
   exertionRating: number;
-  isPreset: boolean;
   isDone: boolean;
 }
 
@@ -54,6 +53,5 @@ export interface PopulatedActivity extends Document {
   warmup: boolean;
   notes?: string;
   exertionRating: number;
-  isPreset: boolean;
   isDone: boolean;
 }

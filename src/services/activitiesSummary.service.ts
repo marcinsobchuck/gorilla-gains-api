@@ -3,6 +3,7 @@ import {
   differenceInWeeks,
   eachMonthOfInterval,
   format,
+  startOfDay,
   startOfMonth,
   subYears
 } from 'date-fns';
@@ -110,11 +111,19 @@ export class ActivitiesSummaryService {
     const activityTypeDistribution = await getActivityTypeDistribution();
     const mostCommonExercise = getMostCommonExercise(allExercises);
 
+    const unresolvedActivities = userActivities.filter(
+      (activity) => !activity.isDone && startOfDay(activity.date) <= startOfDay(new Date())
+    );
+
+    const plannedActivities = userActivities.filter((activity) => activity.date > new Date());
+
     const activitiesStatistics = {
       activitiesCount,
       daysSinceLastActivity,
       averageActivitiesPerWeek,
-      mostCommonExercise
+      mostCommonExercise,
+      unresolvedActivities,
+      plannedActivities
     };
 
     const totals = onlyDoneActivities.reduce<Totals>(
