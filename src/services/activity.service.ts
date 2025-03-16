@@ -1,17 +1,23 @@
 import { endOfDay, startOfDay } from 'date-fns';
-import { ObjectId } from 'mongodb';
 import { FilterQuery, Types } from 'mongoose';
 
+import { ActivityPresetService } from './activityPreset.service';
 import { GetUserActivitiesQueryOptions } from '../controllers/types/activity.types';
 import { Activity } from '../models/activity';
 import { ActivityDto, ActivitySchema, PopulatedActivity } from '../models/types/activity.types';
 import { User } from '../models/user';
 
+const activityPresetService = new ActivityPresetService();
+
 export class ActivityService {
   async createActivity(activityDto: ActivityDto, user: Express.User) {
     const isNewActivityInThePast = startOfDay(new Date(activityDto.date)) <= startOfDay(new Date());
-    const newActivity = { ...activityDto, isDone: isNewActivityInThePast };
+    const newActivity = { ...activityDto, isDone: isNewActivityInThePast, createdBy: user._id };
     const activity = new Activity(newActivity);
+
+    if (activityDto.makePresetFrom) {
+      await activityPresetService.createActivityPreset(user, activityDto);
+    }
 
     const populatedActivity = await activity.populate([
       { path: 'type' },
@@ -99,44 +105,11 @@ export class ActivityService {
 
   async getUserActivityPresets(user: Express.User) {
     const userActivityPresets = await user.populate<ActivitySchema>({
-      path: 'presets'
+      path: 'presets',
+      populate: [{ path: 'type' }, { path: 'exercises.exercise' }]
     });
 
-    return userActivityPresets.presets;
-  }
-
-  async addActivityPreset(user: Express.User, activityId: string) {
-    const activity = await Activity.findById(activityId);
-
-    if (!activity) {
-      throw new Error('Activity not found');
-    }
-
-    const newActivityPresetId = new ObjectId(activityId);
-
-    if (user.presets.includes(newActivityPresetId)) {
-      throw new Error('Preset already exists');
-    }
-
-    const userActivityPresets = user.presets;
-
-    userActivityPresets.push(newActivityPresetId);
-    await user.save();
-  }
-
-  async removeActivityPreset(user: Express.User, presetId: string) {
-    const userActivityPresets = user.presets;
-
-    const removeIndex = userActivityPresets.findIndex(
-      (presetObjId) => presetObjId.toString() === presetId
-    );
-
-    if (removeIndex === -1) {
-      throw new Error('Preset not found');
-    }
-
-    userActivityPresets.splice(removeIndex, 1);
-    await user.save();
+    return userActivityPresets;
   }
 
   async getActivitiesPerUserId(userId: Types.ObjectId) {
@@ -151,7 +124,7 @@ export class ActivityService {
   }
 
   async editActivityById(activityId: string, user: Express.User, activityDto: ActivityDto) {
-    const activity = user.activities.find((item) => String(item) === activityId);
+    const activity = await Activity.findById(activityId);
 
     if (!activity) {
       throw new Error('There is no activity with given id that is connected to current user');

@@ -34,6 +34,3 @@ interface DeleteByActivityIdParams {
 }
 
 export type DeleteByActivityIdRequest = Request<DeleteByActivityIdParams>;
-
-export type AddActivityPresetRequest = Request<object, any, { activityId: string }>;
-export type RemoveActivityPresetRequest = Request<{ presetId: string }>;

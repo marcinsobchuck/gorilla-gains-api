@@ -37,6 +37,7 @@ export interface ActivityDto {
   repeatExercisesCount?: number;
   exertionRating: number;
   isDone: boolean;
+  makePresetFrom: boolean;
 }
 
 export interface PopulatedActivity extends Document {

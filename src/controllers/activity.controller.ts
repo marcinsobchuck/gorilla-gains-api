@@ -2,12 +2,10 @@ import { Request, Response } from 'express';
 
 import {
   ActivitiesPerUserIdRequest,
-  AddActivityPresetRequest,
   CreateActivityRequest,
   DeleteByActivityIdRequest,
   EditByActivityIdRequest,
-  GetUserActivitiesRequest,
-  RemoveActivityPresetRequest
+  GetUserActivitiesRequest
 } from './types/activity.types';
 import { validateActivity } from '../models/activity';
 import { ActivityService } from '../services/activity.service';
@@ -43,41 +41,6 @@ export class ActivityController {
       if (req.user) {
         const userActivities = await activityService.getUserActivities(req.user, req.query);
         res.send(userActivities);
-      }
-    } catch (error: any) {
-      res.status(400).send(error.message);
-    }
-  }
-
-  async getUserActivityPresets(req: Request, res: Response) {
-    try {
-      if (req.user) {
-        const userActivityPresets = await activityService.getUserActivityPresets(req.user);
-        res.send(userActivityPresets);
-      }
-    } catch (error: any) {
-      res.status(400).send(error.message);
-    }
-  }
-
-  async addActivityPreset(req: AddActivityPresetRequest, res: Response) {
-    try {
-      if (req.user) {
-        const { activityId } = req.body;
-        await activityService.addActivityPreset(req.user, activityId);
-        res.status(200).send('Successfully added preset');
-      }
-    } catch (error: any) {
-      res.status(400).send(error.message);
-    }
-  }
-
-  async removeActivityPreset(req: RemoveActivityPresetRequest, res: Response) {
-    try {
-      if (req.user) {
-        const { presetId } = req.params;
-        await activityService.removeActivityPreset(req.user, presetId);
-        res.status(200).send('Successfully removed preset');
       }
     } catch (error: any) {
       res.status(400).send(error.message);
